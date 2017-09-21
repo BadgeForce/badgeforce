@@ -1,0 +1,16 @@
+export default [{
+    "SalesForce_Account_Id": "5003200000zNlN2",
+    "Account_Name": "DormStormers Alaska",
+    "franchiseLocationId": "DA100",
+    "Business_Name": "DormStormers",
+    "First": "Justin",
+    "Last": "Bieber",
+    "Email": "just.in@thebiebs.com",
+    "Primary_Phone": "1234567890",
+    "Existing_Domain": "thebiebs.com",
+    "Address_1": "23 Canada-Eh Rd",
+    "Address_2": "",
+    "City": "Ville",
+    "State": "AK",
+    "Zip": "99999",
+}];
