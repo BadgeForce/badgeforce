@@ -5,12 +5,12 @@ var BadgeLibrary = artifacts.require("../contracts/BadgeLibrary.sol");
 module.exports = function (deployer) {
   deployer.deploy([BadgeLibrary]);
   deployer.link(BadgeLibrary,[Issuer, Holder]);  
-  deployer.deploy(Issuer, '0xde9fc539bd4c305f7bad8796b9595d468b12d010', "Khalil Claybon", "https://github.com/kc1116");
-  deployer.deploy(Holder, '0xde9fc539bd4c305f7bad8796b9595d468b12d010');
+  deployer.deploy(Issuer, '0x420e9cf2d11625ed845d69ef40939f7022ce880b', "Khalil Claybon", "https://github.com/kc1116");
+  deployer.deploy(Holder, '0x420e9cf2d11625ed845d69ef40939f7022ce880b');
 }; 
 
 /*
-Issuer.deployed().then(function(c){c.createBadge("0x13d75a3b5541ec5b7396d6f602711049e4c2c397","This person loves Golang", "Go Advocate", "image", 1.0, "json").then(console.log).catch(console.error)})
+Issuer.deployed().then(function(c){c.createBadge("This person loves Golang", "Go Advocate", "image", 1.0, "json").then(console.log).catch(console.error)})
 Issuer.deployed().then(function(c){c.issue("GoAdvocate",'0xfe66f8ed37cd017bca5c77dcee81a846cf766904', 0).then(console.log).catch(console.error)})
 
 Issuer.deployed().then(function(c){c.createBadge().then(console.log).catch(console.error)})

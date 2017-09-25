@@ -29,7 +29,8 @@ contract BadgeForceToken is StandardToken {
     uint8 public decimals;                //How many decimals to show. ie. There could 1000 base units with 3 decimals. Meaning 0.980 SBX = 980 base units. It's like comparing 1 wei to 1 ether.
     string public symbol;                 //An identifier: eg SBX
     string public version = "BFT.1";       //human 0.1 standard. Just an arbitrary versioning scheme.
-    
+    uint256 constant public BASE = 100000000;
+
     function BadgeForceToken(
         uint256 _initialAmount,
         string _tokenName,
@@ -37,6 +38,7 @@ contract BadgeForceToken is StandardToken {
         string _tokenSymbol
         ) {
         balances[msg.sender] = _initialAmount;               // Give the creator all initial tokens
+        balances[address(this)] = 0;
         totalSupply = _initialAmount;                        // Update total supply
         name = _tokenName;                                   // Set the name for display purposes
         decimals = _decimalUnits;                            // Amount of decimals for display purposes
@@ -52,6 +54,19 @@ contract BadgeForceToken is StandardToken {
         //receiveApproval(address _from, uint256 _value, address _tokenContract, bytes _extraData)
         //it is assumed that when does this that the call *should* succeed, otherwise one would use vanilla approve instead.
         require(_spender.call(bytes4(bytes32(sha3("receiveApproval(address,uint256,address,bytes)"))), msg.sender, _value, this, _extraData));
+        return true;
+    }
+
+    modifier canAfford(address _payee, uint256 _cost) {
+        require(balances[_payee] >= _cost);
+        _;
+    }
+
+    function payForCreateBadge(address _payee) returns(bool success) {
+        uint256 cost = (3*BASE);
+        require(balances[_payee] >= cost);
+        balances[_payee] -= cost;
+        balances[address(this)] += cost;
         return true;
     }
 }

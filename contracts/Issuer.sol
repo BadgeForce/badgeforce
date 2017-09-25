@@ -2,12 +2,13 @@ pragma solidity ^0.4.15;
 
 import "./BadgeLibrary.sol";
 import "./Holder.sol";
+import "./BadgeForceToken.sol";
 
 
 contract Issuer {
 
     //access the badgeforce token contract
-    //BadgeForceToken constant BFT = BadgeForceToken(0x5c40ef6f527f4fba68368774e6130ce6515123f2);
+    BadgeForceToken constant BFT = BadgeForceToken(0xe365653c027d19375e98d69a400b8b8615974775);
 
     /// @notice where issuer holds their badgeforce tokens 
     address public issuer;
@@ -53,13 +54,9 @@ contract Issuer {
         _;
     }
 
-    function testHolder(address _recipient) returns(address sender) {
+    function testHolder(address _recipient) constant returns(address sender) {
         Holder holder = Holder(_recipient);
         return holder.test(_recipient);
-    }
-
-    function testAddr() returns(address sender) {
-        return msg.sender;
     }
 
     /// @notice create a new badge store it in the badging map 
@@ -102,7 +99,6 @@ contract Issuer {
         }
         _sendToRecipient(
             _badgeName, 
-            issuerContract, 
             _expires, 
             _recipient, 
             _txtKey
@@ -166,7 +162,6 @@ contract Issuer {
     /// @notice internal method that gets instance of recipient contract and stores credential
     function _sendToRecipient(
         string _badgeName, 
-        address _issuer, 
         uint expires, 
         address _recipient, 
         bytes32 _txtKey
@@ -188,6 +183,26 @@ contract Issuer {
         );
     }
     
+    /// @notice internal method to call create badge method from library
+    function _createBadge(
+        address _issuer, 
+        string _description, 
+        string _name,
+        string _image,
+        uint _version, 
+        string _json) private 
+        {
+        BFT.payForCreateBadge(issuer);
+        addBadge(
+            _issuer, 
+            _description, 
+            _name,
+            _image, 
+            _version,
+            _json
+        );
+    }
+
     function addBadge(
         address _issuer, 
         string _description, 
@@ -208,25 +223,6 @@ contract Issuer {
         badgeVault.badgeHashNames.push(badgeNameHash);
         badgeVault.badges[badgeNameHash] = badge;
         badgeVault.numberOfBadges++;
-    }
-
-    /// @notice internal method to call create badge method from library
-    function _createBadge(
-        address _issuer, 
-        string _description, 
-        string _name,
-        string _image,
-        uint _version, 
-        string _json) private 
-        {
-        addBadge(
-            _issuer, 
-            _description, 
-            _name,
-            _image, 
-            _version,
-            _json
-        );
     }
 
 } 
