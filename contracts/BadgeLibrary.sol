@@ -9,7 +9,7 @@ library BadgeLibrary {
         string description;
         string name;
         string image;
-        uint version; 
+        string version; 
         string json;
     }    
 
@@ -19,7 +19,7 @@ library BadgeLibrary {
         string description;
         string name;
         string image;
-        uint version; 
+        string version; 
         string json;
         bool revoked;
         uint expires;
@@ -40,7 +40,7 @@ library BadgeLibrary {
         string _description, 
         string _name, 
         string _image, 
-        uint256 _version, 
+        string _version, 
         address _recipient
     ) constant public returns(bytes32 _hash) 
     {
@@ -54,5 +54,4 @@ library BadgeLibrary {
                 _recipient
         ));
     }
-
 }

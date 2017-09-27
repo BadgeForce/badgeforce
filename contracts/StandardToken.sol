@@ -28,6 +28,7 @@ contract StandardToken is Token {
         //require(balances[msg.sender] >= _value && balances[_to] + _value > balances[_to]);
         balances[msg.sender] -= _value;
         balances[_to] += _value;
+        require(_to != 0x0);
         Transfer(msg.sender, _to, _value);
         return true;
     }

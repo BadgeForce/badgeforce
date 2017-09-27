@@ -53,13 +53,13 @@ contract Holder {
         string _description,
         string _name,
         string _image,
-        uint _version,
+        string _version,
         string _json,
         bool _revoked,
         uint _expires,
         address _recipient,
         bytes32 _txKey
-    ) public trusted(msg.sender) 
+    ) public trusted(msg.sender)
     {
         credentials.push(
             BadgeLibrary.BFCredential(
@@ -105,9 +105,33 @@ contract Holder {
         }
     }
 
-    //onlyHolder(holder)
-    function getBadge() constant public  returns (bytes32 x) {
-        BadgeLibrary.BFCredential memory cred = credentials[0];
-        return cred.txKey;
+    /// @notice get a holders credential 
+    /// @param _index index of credential to return 
+    function getBadge(uint _index) constant public  returns (
+        address _issuer,
+        string _description,
+        string _name,
+        string _image,
+        string _version,
+        string _json,
+        bool _revoked,
+        uint _expires,
+        address _recipient,
+        bytes32 _txKey
+    ) {
+        require(credentials.length > 0 && _index >= 0);
+        BadgeLibrary.BFCredential memory cred = credentials[_index];
+        return (
+            cred.issuer,
+            cred.description,
+            cred.name,
+            cred.image,
+            cred.version,
+            cred.json,
+            cred.revoked,
+            cred.expires,
+            cred.recipient,
+            cred.txKey
+        );
     } 
 }

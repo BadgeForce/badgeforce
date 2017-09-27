@@ -14,9 +14,10 @@ Machine-based, rapid creation of many tokens would not necessarily need these ex
 pragma solidity ^0.4.15;
 
 import "./StandardToken.sol";
+import "./PaymentLibrary.sol";
+
 
 contract BadgeForceToken is StandardToken {
-
     /* Public variables of the token */
 
     /*
@@ -25,24 +26,16 @@ contract BadgeForceToken is StandardToken {
     They allow one to customise the token contract & in no way influences the core functionality.
     Some wallets/interfaces might not even bother to look at this information.
     */
-    string public name;                   //fancy name: eg Simon Bucks
-    uint8 public decimals;                //How many decimals to show. ie. There could 1000 base units with 3 decimals. Meaning 0.980 SBX = 980 base units. It's like comparing 1 wei to 1 ether.
-    string public symbol;                 //An identifier: eg SBX
-    string public version = "BFT.1";       //human 0.1 standard. Just an arbitrary versioning scheme.
-    uint256 constant public BASE = 100000000;
+    string constant public name = "BadgeForceToken";                   //fancy name: eg Simon Bucks
+    uint8 constant public decimals = 18;                //How many decimals to show. ie. There could 1000 base units with 3 decimals. Meaning 0.980 SBX = 980 base units. It's like comparing 1 wei to 1 ether.
+    string constant public symbol = "BFT";                 //An identifier: eg SBX
+    string constant public version = "BFT.1";       //human 0.1 standard. Just an arbitrary versioning scheme.
+    uint256 constant public INITIAL_SUPPLY = 1*(10**9)*(10**18);
 
-    function BadgeForceToken(
-        uint256 _initialAmount,
-        string _tokenName,
-        uint8 _decimalUnits,
-        string _tokenSymbol
-        ) {
-        balances[msg.sender] = _initialAmount;               // Give the creator all initial tokens
-        balances[address(this)] = 0;
-        totalSupply = _initialAmount;                        // Update total supply
-        name = _tokenName;                                   // Set the name for display purposes
-        decimals = _decimalUnits;                            // Amount of decimals for display purposes
-        symbol = _tokenSymbol;                               // Set the symbol for display purposes
+
+    function BadgeForceToken() {
+        balances[msg.sender] = INITIAL_SUPPLY; 
+        totalSupply = INITIAL_SUPPLY;       
     }
 
     /* Approves and then calls the receiving contract */
@@ -57,16 +50,31 @@ contract BadgeForceToken is StandardToken {
         return true;
     }
 
-    modifier canAfford(address _payee, uint256 _cost) {
-        require(balances[_payee] >= _cost);
-        _;
-    }
-
     function payForCreateBadge(address _payee) returns(bool success) {
-        uint256 cost = (3*BASE);
+        uint256 cost = PaymentLibrary.getCreateBadgeCost();
         require(balances[_payee] >= cost);
         balances[_payee] -= cost;
-        balances[address(this)] += cost;
+        return true;
+    }
+
+    function payForIssueCredential(address _payee) returns(bool success) {
+        uint256 cost = PaymentLibrary.getIssueCredentialCost();
+        require(balances[_payee] >= cost);
+        balances[_payee] -= cost;
+        return true;
+    }
+
+    function payForVerifyCredential(address _payee) returns(bool success) {
+        uint256 cost = PaymentLibrary.getVerifyCredentialCost();
+        require(balances[_payee] >= cost);
+        balances[_payee] -= cost;
+        return true;
+    }
+
+    function payForDeleteBadge(address _payee) returns(bool success) {
+        uint256 cost = PaymentLibrary.payDeleteBadgeCost();
+        require(balances[_payee] >= cost);
+        balances[_payee] -= cost;
         return true;
     }
 }

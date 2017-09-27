@@ -8,8 +8,8 @@ import "./BadgeForceToken.sol";
 contract Issuer {
 
     //access the badgeforce token contract
-    BadgeForceToken constant BFT = BadgeForceToken(0xe365653c027d19375e98d69a400b8b8615974775);
-
+    BadgeForceToken constant BFT = BadgeForceToken(0x960632c568213c2b583578a7dc7eb4cd2b2bbbfb);
+    address constant NONE = 0x0000000000000000000000000000000000000000;
     /// @notice where issuer holds their badgeforce tokens 
     address public issuer;
 
@@ -35,6 +35,7 @@ contract Issuer {
 
     /// @notice mapping of a unique hash to a recipient address, used to verify issuer of a credential 
     mapping (bytes32=>IssueTransaction) public credentialTxtMap;
+    
     uint private nonce;
 
     /// @notice storage for earnable badges 
@@ -46,11 +47,19 @@ contract Issuer {
         url = _url;
         issuerContract = address(this);
         badgeVault.numberOfBadges = 0;
+        nonce = 0;
     }
 
     /// @notice make sure caller is the issuer that owns this contract because badgeforce tokens will be used 
     modifier onlyOwner(address _issuer) {
         require(msg.sender == _issuer);
+        _;
+    }
+
+    modifier badgeExists(string _name) {
+        bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
+        BadgeLibrary.BFBadge memory badge = badgeVault.badges[badgeNameHash];
+        require(badge.issuer != NONE);
         _;
     }
 
@@ -69,9 +78,10 @@ contract Issuer {
         string _description, 
         string _name,
         string _image,
-        uint _version, 
+        string _version, 
         string _json) onlyOwner(issuer) 
-        {    
+        {   
+        require(BFT.payForCreateBadge(issuer)); 
         _createBadge(
             issuerContract, 
             _description, 
@@ -87,8 +97,9 @@ contract Issuer {
     /// @param _recipient address of the recipient contract
     /// @param _expires expire date (number of weeks)
     function issue(string _badgeName, address _recipient, uint _expires) 
-    public onlyOwner(issuer) 
+    public onlyOwner(issuer)
     {
+        //require(BFT.payForIssueCredential(issuer));
         bytes32 _txtKey = _getTxtKey(msg.data);
         _setNewTxt(_txtKey, _recipient, _badgeName);
         uint expires;
@@ -142,12 +153,12 @@ contract Issuer {
     /// @notice check that a transaction key exists in the transaction map (verify credential issuer)
     /// @param _txtKey the transaction key to check 
     function _checkTransaction(bytes32 _txtKey, bytes32 _integrityHash, address _recipient) constant returns(bool _keyCheck, bool _integrityHashCheck, bool _recipientCheck) {
-        address none = 0x0000000000000000000000000000000000000000;
+        
         IssueTransaction memory transaction = credentialTxtMap[_txtKey];
         _keyCheck = false;
         _integrityHashCheck = false;
         _recipientCheck = false;
-        if (transaction.recipient != none) {
+        if (transaction.recipient == NONE) {
             return(_keyCheck, _integrityHashCheck, _recipientCheck);
         } 
 
@@ -155,7 +166,7 @@ contract Issuer {
         _integrityHashCheck = (_integrityHash == transaction.integrityHash);
         _recipientCheck = (_recipient == transaction.recipient);
 
-        return(_keyCheck, _integrityHashCheck, _recipientCheck);
+        return(true, _integrityHashCheck, _recipientCheck);
 
     }
 
@@ -165,9 +176,10 @@ contract Issuer {
         uint expires, 
         address _recipient, 
         bytes32 _txtKey
-    ) private 
+    ) private
     {   
         BadgeLibrary.BFBadge memory badge = badgeVault.badges[BadgeLibrary.getBadgeNameHash(_badgeName)];
+        require(badge.issuer != NONE);
         Holder holder = Holder(_recipient);
         holder.storeCredential(
             badge.issuer,
@@ -175,7 +187,7 @@ contract Issuer {
             badge.name,
             badge.image,
             badge.version,
-            badge.json,
+            badge.json, 
             false,
             expires,
             _recipient, 
@@ -189,10 +201,9 @@ contract Issuer {
         string _description, 
         string _name,
         string _image,
-        uint _version, 
+        string _version, 
         string _json) private 
         {
-        BFT.payForCreateBadge(issuer);
         addBadge(
             _issuer, 
             _description, 
@@ -208,7 +219,7 @@ contract Issuer {
         string _description, 
         string _name,
         string _image,
-        uint _version, 
+        string _version, 
         string _json) private 
     {
         BadgeLibrary.BFBadge memory badge = BadgeLibrary.BFBadge(
@@ -225,4 +236,42 @@ contract Issuer {
         badgeVault.numberOfBadges++;
     }
 
+    /// @notice delete a created badge 
+    function deleteBadge(string _name) onlyOwner(issuer) returns(bool success) {
+        require(BFT.payForDeleteBadge(issuer));
+        bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
+        //badgeVault.badgeHashNames.push(badgeNameHash);
+        delete badgeVault.badges[badgeNameHash];
+        badgeVault.numberOfBadges--;
+        return true;
+    }
+
+    // @notice get the number of badges (used by frontend as iterator index to retrieve each badge)
+    function getNumberOfBadges() constant public returns(uint count) {
+        return badgeVault.numberOfBadges;
+    }
+
+    /// @notice get a badge by it's index (should be used by frontend in a loop to get all the badges)
+    /// @param _index index of the badge to get inside the badge array
+    function getBadge(uint _index) constant public returns(
+        address _issuer, 
+        string _description, 
+        string _name, 
+        string _image, 
+        string _version
+    ) {
+        require(badgeVault.numberOfBadges > 0 && _index >= 0);
+        BadgeLibrary.BFBadge memory badge = badgeVault.badges[badgeVault.badgeHashNames[_index]];
+        return (
+            badge.issuer, 
+            badge.description,
+            badge.name, 
+            badge.image,
+            badge.version
+        );
+    } 
+
+    function getTx(bytes32 t) constant public returns(address x) {
+        return credentialTxtMap[t].recipient;
+    }
 } 

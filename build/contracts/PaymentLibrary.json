@@ -1,0 +1,74 @@
+{
+  "contract_name": "PaymentLibrary",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getCreateBadgeCost",
+      "outputs": [
+        {
+          "name": "cost",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "payDeleteBadgeCost",
+      "outputs": [
+        {
+          "name": "cost",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getVerifyCredentialCost",
+      "outputs": [
+        {
+          "name": "cost",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getIssueCredentialCost",
+      "outputs": [
+        {
+          "name": "cost",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    }
+  ],
+  "unlinked_binary": "0x6060604052341561000f57600080fd5b5b61011c8061001f6000396000f300606060405263ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416636a0452dd8114605a5780636c398381146072578063d57b55e814608a578063df35e5901460a2575b600080fd5b606060ba565b60405190815260200160405180910390f35b606060c8565b60405190815260200160405180910390f35b606060d5565b60405190815260200160405180910390f35b606060e2565b60405190815260200160405180910390f35b68015af1d78b58c400005b90565b67a688906bd8b000005b90565b67d02ab486cedc00005b90565b6802b5e3af16b18800005b905600a165627a7a723058209e9ee595494dd9d2690851b77872a4a43e7e0348965876f51166c1639ea17b240029",
+  "networks": {
+    "1506480242653": {
+      "events": {},
+      "links": {},
+      "address": "0x09cf54f2e731f4509036cfc2779c44b6367af366",
+      "updated_at": 1506483028122
+    },
+    "1506484176219": {
+      "events": {},
+      "links": {},
+      "address": "0xc1c5d41f2ca73d90cc27f3f5cb075d3da36634c6",
+      "updated_at": 1506484277066
+    }
+  },
+  "schema_version": "0.0.5",
+  "updated_at": 1506489556628
+}

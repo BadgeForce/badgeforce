@@ -1,7 +1,9 @@
 const BadgeForceToken = artifacts.require(`./BadgeForceToken.sol`)
-
+const PaymentLibrary = artifacts.require(`./PaymentLibrary.sol`)
 module.exports = (deployer) => {
-  deployer.deploy(BadgeForceToken, 6500000000000000, "BadgeForceToken", 8, "BFC");
+  deployer.deploy([PaymentLibrary]);
+  deployer.link(PaymentLibrary,[BadgeForceToken]); 
+  deployer.deploy(BadgeForceToken);
 }
 
 /*
