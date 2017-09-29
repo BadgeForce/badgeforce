@@ -35,7 +35,7 @@ contract Issuer {
 
     /// @notice mapping of a unique hash to a recipient address, used to verify issuer of a credential 
     mapping (bytes32=>IssueTransaction) public credentialTxtMap;
-    
+    mapping (bytes32=>bool) public revokationMap;
     uint private nonce;
 
     /// @notice storage for earnable badges 
@@ -116,6 +116,11 @@ contract Issuer {
         );
     }
     
+    /// @notice revoke a credential
+    function revoke(bytes32 _txKey) onlyOwner(issuer) {
+        revokationMap[_txKey] = true;
+    }
+
     /// @notice get a badgeforce transaction key 
     function _getTxtKey(bytes _data) constant public returns (bytes32 txtKey) {
         return BadgeLibrary.credentialTxKey(issuerContract, _data, nonce);
