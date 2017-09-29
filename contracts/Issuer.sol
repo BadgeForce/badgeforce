@@ -279,4 +279,9 @@ contract Issuer {
     function getTx(bytes32 t) constant public returns(address x) {
         return credentialTxtMap[t].recipient;
     }
+
+    /// @notice get issuer info
+    function getInfo() public constant returns(address _issuer, address _contract, string _name, string _url) {
+        return(issuer, issuerContract, name, url);
+    }
 } 

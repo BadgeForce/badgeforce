@@ -5,8 +5,8 @@ var BadgeLibrary = artifacts.require("../contracts/BadgeLibrary.sol");
 module.exports = function (deployer) {
   deployer.deploy([BadgeLibrary]);
   deployer.link(BadgeLibrary,[Issuer, Holder]);  
-  deployer.deploy(Issuer, '0x4c370b35d5068e6f1d17085c74b0061fa381998b', "Khalil Claybon", "https://github.com/kc1116");
-  deployer.deploy(Holder, '0x4c370b35d5068e6f1d17085c74b0061fa381998b');
+  deployer.deploy(Issuer, '0xdb57ffa153af4a8dc058b7d6c6c995defdb9b5ff', "Khalil Claybon", "https://github.com/kc1116");
+  deployer.deploy(Holder, '0xdb57ffa153af4a8dc058b7d6c6c995defdb9b5ff');
 }; 
 
 /*
