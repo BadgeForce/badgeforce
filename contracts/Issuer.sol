@@ -24,6 +24,7 @@ contract Issuer {
     struct Vault {
         mapping (bytes32=>BadgeLibrary.BFBadge) badges;
         bytes32[] badgeHashNames;
+        mapping(bytes32=>bool) existenceHelperMap;
         uint numberOfBadges;
     }
 
@@ -81,7 +82,8 @@ contract Issuer {
         string _version, 
         string _json) onlyOwner(issuer) 
         {   
-        require(BFT.payForCreateBadge(issuer)); 
+        //require(BFT.payForCreateBadge(issuer)); 
+        require(!badgeVault.existenceHelperMap[BadgeLibrary.getBadgeNameHash(_name)]);
         _createBadge(
             issuerContract, 
             _description, 
@@ -121,6 +123,10 @@ contract Issuer {
         revokationMap[_txKey] = true;
     }
 
+    function getRevoked(bytes32 _key) constant returns(bool c) {
+        return revokationMap[_key];
+    }
+
     /// @notice get a badgeforce transaction key 
     function _getTxtKey(bytes _data) constant public returns (bytes32 txtKey) {
         return BadgeLibrary.credentialTxKey(issuerContract, _data, nonce);
@@ -157,21 +163,21 @@ contract Issuer {
 
     /// @notice check that a transaction key exists in the transaction map (verify credential issuer)
     /// @param _txtKey the transaction key to check 
-    function _checkTransaction(bytes32 _txtKey, bytes32 _integrityHash, address _recipient) constant returns(bool _keyCheck, bool _integrityHashCheck, bool _recipientCheck) {
+    function _checkTransaction(bytes32 _txtKey, bytes32 _integrityHash, address _recipient) constant returns(bool _revoked, bool _integrityHashCheck, bool _recipientCheck) {
         
         IssueTransaction memory transaction = credentialTxtMap[_txtKey];
-        _keyCheck = false;
+        _revoked = false;
         _integrityHashCheck = false;
         _recipientCheck = false;
         if (transaction.recipient == NONE) {
-            return(_keyCheck, _integrityHashCheck, _recipientCheck);
+            return(_revoked, _integrityHashCheck, _recipientCheck);
         } 
 
-        _keyCheck = (_txtKey == transaction.key);
+        _revoked = revokationMap[transaction.key];
         _integrityHashCheck = (_integrityHash == transaction.integrityHash);
         _recipientCheck = (_recipient == transaction.recipient);
 
-        return(true, _integrityHashCheck, _recipientCheck);
+        return(_revoked, _integrityHashCheck, _recipientCheck);
 
     }
 
@@ -193,7 +199,6 @@ contract Issuer {
             badge.image,
             badge.version,
             badge.json, 
-            false,
             expires,
             _recipient, 
             _txtKey
@@ -239,14 +244,15 @@ contract Issuer {
         badgeVault.badgeHashNames.push(badgeNameHash);
         badgeVault.badges[badgeNameHash] = badge;
         badgeVault.numberOfBadges++;
+        badgeVault.existenceHelperMap[badgeNameHash] = true;
     }
 
     /// @notice delete a created badge 
     function deleteBadge(string _name) onlyOwner(issuer) returns(bool success) {
-        require(BFT.payForDeleteBadge(issuer));
+        //require(BFT.payForDeleteBadge(issuer));
         bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
-        //badgeVault.badgeHashNames.push(badgeNameHash);
         delete badgeVault.badges[badgeNameHash];
+        badgeVault.existenceHelperMap[badgeNameHash] = false;
         badgeVault.numberOfBadges--;
         return true;
     }
@@ -267,6 +273,7 @@ contract Issuer {
     ) {
         require(badgeVault.numberOfBadges > 0 && _index >= 0);
         BadgeLibrary.BFBadge memory badge = badgeVault.badges[badgeVault.badgeHashNames[_index]];
+        require(badge.issuer != NONE);
         return (
             badge.issuer, 
             badge.description,

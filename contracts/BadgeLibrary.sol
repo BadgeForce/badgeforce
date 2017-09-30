@@ -21,7 +21,6 @@ library BadgeLibrary {
         string image;
         string version; 
         string json;
-        bool revoked;
         uint expires;
         address recipient;
         bytes32 txKey;

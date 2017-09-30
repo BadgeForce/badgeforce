@@ -55,7 +55,6 @@ contract Holder {
         string _image,
         string _version,
         string _json,
-        bool _revoked,
         uint _expires,
         address _recipient,
         bytes32 _txKey
@@ -69,7 +68,6 @@ contract Holder {
                 _image,
                 _version,
                 _json,
-                _revoked,
                 _expires,
                 _recipient,
                 _txKey
@@ -87,19 +85,17 @@ contract Holder {
             credential.recipient
         );
         Issuer issuer = Issuer(credential.issuer);
-        var (_keyCheck, _integrityHashCheck, _recipientCheck) = issuer._checkTransaction(
+        var (_revoked, _integrityHashCheck, _recipientCheck) = issuer._checkTransaction(
             credential.txKey, 
             integrityHash, 
             credential.recipient
         );
-        if (!_keyCheck) {
-            return(_keyCheck, INVALID_TRANSACTION);
+        if (_revoked) {
+            return(false, REVOKED);
         } else if (!_recipientCheck) {
             return(_recipientCheck, INVALID_RECIPIENT);
         } else if (!_integrityHashCheck) {
             return(_integrityHashCheck, INVALID_INTEGRITYHASH);
-        } else if (credential.revoked) {
-            return(false, REVOKED);
         } else {
             return(true, VALID_CREDENTIAL);
         }
@@ -107,14 +103,13 @@ contract Holder {
 
     /// @notice get a holders credential 
     /// @param _index index of credential to return 
-    function getBadge(uint _index) constant public  returns (
+    function getCredential(uint _index) constant public  returns (
         address _issuer,
         string _description,
         string _name,
         string _image,
         string _version,
         string _json,
-        bool _revoked,
         uint _expires,
         address _recipient,
         bytes32 _txKey
@@ -128,10 +123,14 @@ contract Holder {
             cred.image,
             cred.version,
             cred.json,
-            cred.revoked,
             cred.expires,
             cred.recipient,
             cred.txKey
         );
-    } 
+    }
+
+    /// @notice get number of credentials 
+    function getNumberOfCredentials() constant public returns(uint count) {
+        return credentials.length;
+    }
 }
