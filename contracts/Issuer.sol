@@ -24,8 +24,6 @@ contract Issuer {
     struct Vault {
         mapping (bytes32=>BadgeLibrary.BFBadge) badges;
         bytes32[] badgeHashNames;
-        mapping(bytes32=>bool) existenceHelperMap;
-        uint numberOfBadges;
     }
 
     struct IssueTransaction {
@@ -47,7 +45,6 @@ contract Issuer {
         name = _name;
         url = _url;
         issuerContract = address(this);
-        badgeVault.numberOfBadges = 0;
         nonce = 0;
     }
 
@@ -57,10 +54,24 @@ contract Issuer {
         _;
     }
 
-    modifier badgeExists(string _name) {
+    modifier uniqueBadge(string _name) {
         bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
         BadgeLibrary.BFBadge memory badge = badgeVault.badges[badgeNameHash];
-        require(badge.issuer != NONE);
+        require(badgeVault.badgeHashNames.length == 0 || badgeVault.badgeHashNames[badge.index] != badgeNameHash);
+        _;
+    }
+
+    modifier badgeExistsN(string _name) {
+        bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
+        BadgeLibrary.BFBadge memory badge = badgeVault.badges[badgeNameHash];
+        require(badgeVault.badgeHashNames.length > 0 && badgeVault.badgeHashNames[badge.index] == badgeNameHash);
+        _;
+    }
+
+    modifier badgeExists(uint _index) {
+        BadgeLibrary.BFBadge memory badge = badgeVault.badges[badgeVault.badgeHashNames[_index]];
+        bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(badge.name);
+        require(badgeVault.badgeHashNames.length > 0 && badgeVault.badgeHashNames[_index] == badgeNameHash);
         _;
     }
 
@@ -80,10 +91,9 @@ contract Issuer {
         string _name,
         string _image,
         string _version, 
-        string _json) onlyOwner(issuer) 
+        string _json) onlyOwner(issuer) uniqueBadge(_name)
         {   
         //require(BFT.payForCreateBadge(issuer)); 
-        require(!badgeVault.existenceHelperMap[BadgeLibrary.getBadgeNameHash(_name)]);
         _createBadge(
             issuerContract, 
             _description, 
@@ -231,49 +241,48 @@ contract Issuer {
         string _image,
         string _version, 
         string _json) private 
-    {
+    {   
+        bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
         BadgeLibrary.BFBadge memory badge = BadgeLibrary.BFBadge(
             _issuer, 
             _description, 
             _name,
             _image, 
             _version,
-            _json
+            _json, 
+            badgeVault.badgeHashNames.push(badgeNameHash)-1
         );
-        bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
-        badgeVault.badgeHashNames.push(badgeNameHash);
         badgeVault.badges[badgeNameHash] = badge;
-        badgeVault.numberOfBadges++;
-        badgeVault.existenceHelperMap[badgeNameHash] = true;
     }
 
     /// @notice delete a created badge 
-    function deleteBadge(string _name) onlyOwner(issuer) returns(bool success) {
+    function deleteBadge(string _name) onlyOwner(issuer) badgeExistsN(_name) returns(bool success) {
         //require(BFT.payForDeleteBadge(issuer));
         bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
+        uint rowToDelete = badgeVault.badges[badgeNameHash].index; 
+        bytes32 rowToMove = badgeVault.badgeHashNames[badgeVault.badgeHashNames.length-1]; 
+        badgeVault.badgeHashNames[rowToDelete] = rowToMove; 
+        badgeVault.badgeHashNames.length--;
         delete badgeVault.badges[badgeNameHash];
-        badgeVault.existenceHelperMap[badgeNameHash] = false;
-        badgeVault.numberOfBadges--;
         return true;
     }
 
     // @notice get the number of badges (used by frontend as iterator index to retrieve each badge)
     function getNumberOfBadges() constant public returns(uint count) {
-        return badgeVault.numberOfBadges;
+        return badgeVault.badgeHashNames.length;
     }
 
     /// @notice get a badge by it's index (should be used by frontend in a loop to get all the badges)
     /// @param _index index of the badge to get inside the badge array
-    function getBadge(uint _index) constant public returns(
+    function getBadge(uint _index) constant badgeExists(_index) public returns(
         address _issuer, 
         string _description, 
         string _name, 
         string _image, 
         string _version
     ) {
-        require(badgeVault.numberOfBadges > 0 && _index >= 0);
-        BadgeLibrary.BFBadge memory badge = badgeVault.badges[badgeVault.badgeHashNames[_index]];
-        require(badge.issuer != NONE);
+        bytes32 badgeNameHash = badgeVault.badgeHashNames[_index];
+        BadgeLibrary.BFBadge memory badge = badgeVault.badges[badgeNameHash];
         return (
             badge.issuer, 
             badge.description,

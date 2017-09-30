@@ -11,6 +11,7 @@ library BadgeLibrary {
         string image;
         string version; 
         string json;
+        uint index;
     }    
 
     /// @notice represents details of an issued badge 
