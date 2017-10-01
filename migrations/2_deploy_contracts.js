@@ -1,6 +1,6 @@
 var Issuer = artifacts.require("../contracts/Issuer.sol");
 var Holder = artifacts.require("../contracts/Holder.sol");
-var BadgeLibrary = artifacts.require("../contracts/BadgeLibrary.sol");
+var BadgeLibrary = artifacts.require("BadgeLibrary.sol");
 
 module.exports = function (deployer) {
   deployer.deploy([BadgeLibrary]);

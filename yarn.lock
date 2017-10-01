@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"BadgeLibrary@https://github.com/BadgeForce/BadgeLibrary.git#0.0.1":
+  version "0.0.1"
+  resolved "https://github.com/BadgeForce/BadgeLibrary.git#2588575a2a539b8fd30234e252a5fef2ad5b00ab"
+
 Q@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/Q/-/Q-1.0.0.tgz#c857afc928c9bea146202dd5c37fa1b1b63d9e28"
