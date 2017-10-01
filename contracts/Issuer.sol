@@ -54,6 +54,7 @@ contract Issuer {
         _;
     }
 
+    /// @notice makes sure badge is unique
     modifier uniqueBadge(string _name) {
         bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
         BadgeLibrary.BFBadge memory badge = badgeVault.badges[badgeNameHash];
@@ -61,6 +62,7 @@ contract Issuer {
         _;
     }
 
+    /// @notice checks if a badge exists by name
     modifier badgeExistsN(string _name) {
         bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
         BadgeLibrary.BFBadge memory badge = badgeVault.badges[badgeNameHash];
@@ -68,6 +70,7 @@ contract Issuer {
         _;
     }
 
+    /// @notice checks if a badge exists by index
     modifier badgeExists(uint _index) {
         BadgeLibrary.BFBadge memory badge = badgeVault.badges[badgeVault.badgeHashNames[_index]];
         bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(badge.name);
@@ -75,11 +78,10 @@ contract Issuer {
         _;
     }
 
-    function testHolder(address _recipient) constant returns(address sender) {
-        Holder holder = Holder(_recipient);
-        return holder.test(_recipient);
-    }
-
+    event LogCreateBadge(
+        string _name,
+        address indexed _issuer
+    ); 
     /// @notice create a new badge store it in the badging map 
     /// @param _description Description of the badge 
     /// @param _name name of the badge
@@ -91,7 +93,7 @@ contract Issuer {
         string _name,
         string _image,
         string _version, 
-        string _json) onlyOwner(issuer) uniqueBadge(_name)
+        string _json) onlyOwner(issuer) uniqueBadge(_name) public
         {   
         //require(BFT.payForCreateBadge(issuer)); 
         _createBadge(
@@ -104,6 +106,10 @@ contract Issuer {
         );
     }
 
+    event LogIssueCredential(
+        string _badgeName,
+        address indexed _recipient
+    );
     /// @notice issue a new credential to a recipient contract
     /// @param _badgeName name of the badge to issue 
     /// @param _recipient address of the recipient contract
@@ -129,11 +135,12 @@ contract Issuer {
     }
     
     /// @notice revoke a credential
-    function revoke(bytes32 _txKey) onlyOwner(issuer) {
+    function revoke(bytes32 _txKey) public onlyOwner(issuer) {
         revokationMap[_txKey] = true;
     }
 
-    function getRevoked(bytes32 _key) constant returns(bool c) {
+    /// @notice check if credential is revoked
+    function getRevoked(bytes32 _key) public constant returns(bool c) {
         return revokationMap[_key];
     }
 
@@ -173,7 +180,7 @@ contract Issuer {
 
     /// @notice check that a transaction key exists in the transaction map (verify credential issuer)
     /// @param _txtKey the transaction key to check 
-    function _checkTransaction(bytes32 _txtKey, bytes32 _integrityHash, address _recipient) constant returns(bool _revoked, bool _integrityHashCheck, bool _recipientCheck) {
+    function _checkTransaction(bytes32 _txtKey, bytes32 _integrityHash, address _recipient) constant public returns(bool _revoked, bool _integrityHashCheck, bool _recipientCheck) {
         
         IssueTransaction memory transaction = credentialTxtMap[_txtKey];
         _revoked = false;
@@ -212,6 +219,10 @@ contract Issuer {
             expires,
             _recipient, 
             _txtKey
+        );
+        LogIssueCredential(
+            badge.name,
+            _recipient
         );
     }
     
@@ -253,10 +264,12 @@ contract Issuer {
             badgeVault.badgeHashNames.push(badgeNameHash)-1
         );
         badgeVault.badges[badgeNameHash] = badge;
+        LogCreateBadge(badge.name, badge.issuer);
     }
 
+    event LogDeleteBadge(string _name, uint count);
     /// @notice delete a created badge 
-    function deleteBadge(string _name) onlyOwner(issuer) badgeExistsN(_name) returns(bool success) {
+    function deleteBadge(string _name) onlyOwner(issuer) badgeExistsN(_name) public returns(bool success) {
         //require(BFT.payForDeleteBadge(issuer));
         bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
         uint rowToDelete = badgeVault.badges[badgeNameHash].index; 
@@ -264,9 +277,10 @@ contract Issuer {
         badgeVault.badgeHashNames[rowToDelete] = rowToMove; 
         badgeVault.badgeHashNames.length--;
         delete badgeVault.badges[badgeNameHash];
+        LogDeleteBadge(_name, badgeVault.badgeHashNames.length);
         return true;
     }
-
+ 
     // @notice get the number of badges (used by frontend as iterator index to retrieve each badge)
     function getNumberOfBadges() constant public returns(uint count) {
         return badgeVault.badgeHashNames.length;
@@ -291,10 +305,6 @@ contract Issuer {
             badge.version
         );
     } 
-
-    function getTx(bytes32 t) constant public returns(address x) {
-        return credentialTxtMap[t].recipient;
-    }
 
     /// @notice get issuer info
     function getInfo() public constant returns(address _issuer, address _contract, string _name, string _url) {

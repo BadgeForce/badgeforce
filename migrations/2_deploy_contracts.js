@@ -5,8 +5,8 @@ var BadgeLibrary = artifacts.require("../contracts/BadgeLibrary.sol");
 module.exports = function (deployer) {
   deployer.deploy([BadgeLibrary]);
   deployer.link(BadgeLibrary,[Issuer, Holder]);  
-  deployer.deploy(Issuer, '0x840f34d2f1925d979513b71a0abf109bf8859199', "Khalil Claybon", "https://github.com/kc1116");
-  deployer.deploy(Holder, '0x840f34d2f1925d979513b71a0abf109bf8859199');
+  deployer.deploy(Issuer, '0x984549f5dbb8950986d8f760121253ac3e4cf08c', "Khalil Claybon", "https://github.com/kc1116");
+  deployer.deploy(Holder, '0x984549f5dbb8950986d8f760121253ac3e4cf08c');
 }; 
 
 /*
@@ -21,7 +21,7 @@ Issuer.deployed().then(function(c){c.badges.call().then(function(badges){console
 Issuer.deployed().then(function(c){c.credentialTxMap.call().then(function(badges){console.log(badges)})})
 Issuer.deployed().then(function(c){c.testAddr.call().then(console.log)})
 Issuer.deployed().then(function(c){c.testHolder('0x189388fb9840f37607bb57b15563c604ccfebfb0').then(console.log)})
-Issuer.deployed().then(function(c){c.numberOfBadges.call().then(console.log)})
+Issuer.deployed().then(function(c){c.getNumberOfBadges.call().then(console.log)})
 Issuer.deployed().then(function(c){c.issuer.call(0).then(function(issuer){console.log(issuer == '0xac44f6c7b0def0f11a4a687fb4ddf78fd68d2f83')})})
 Issuer.deployed().then(cosole.log)
 
@@ -30,9 +30,9 @@ Issuer.deployed().then(function(c){c.credentialTxtMap(0).then(console.log).catch
 Issuer.deployed().then(function(c){c._getTxt('0x2f077e95a6cb654aebe902c3f0ecacc8208ae99e78fe04c9020428b2c063752d').then(console.log)})
 
 
-Holder.deployed().then(function(c){c.getBadge().then(console.log).catch(console.log)})
+Holder.deployed().then(function(c){c.getBadge(0).then(console.log).catch(console.log)})
 Holder.deployed().then(function(c){c.verifyCredential(0).then(console.log).catch(console.log)})
-Holder.deployed().then(function(c){c.addTrustedIssuer('0xcfb6cdc1f5d8022977957648fe8dcbcc2354682d').then(console.log).catch(console.log)})
+Holder.deployed().then(function(c){c.addTrustedIssuer('0x47205ce9b1fad62a143e58adb463524e73bc2a42').then(console.log).catch(console.log)})
 
 
 web3.eth.sendTransaction({to:0xfcc6c152a8d7dec89b54eab85c2ce634f9a48177, from:0x86e61595210f80e073ecb859fdf39b7400000000, data: getData});*/

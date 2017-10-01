@@ -26,27 +26,28 @@ contract Holder {
         holder = _holder;
     }
 
-    function test(address a) returns(address x) {
-        return a;
-    }
-
+    event LogAccessAttempt(address _caller, string _func);
     /// @notice make sure caller is the holder that owns this contract because badgeforce tokens will be used 
-    modifier onlyHolder(address _holder) {
+    modifier onlyHolder(address _holder, string _func) {
+        LogAccessAttempt(_holder, _func);
         require(msg.sender == _holder);
         _;
     }
 
+    event LogStoreAttempt(address _caller);
     /// @notice make sure issuer is trusted to store credentials on this contract
     modifier trusted(address _issuer) {
+        LogStoreAttempt(_issuer);
         require(trustedIssuers[_issuer]);
         _;
     }
 
     /// @notice add a new trusted issuer 
-    function addTrustedIssuer(address _issuer) onlyHolder(holder) {
+    function addTrustedIssuer(address _issuer) public onlyHolder(holder, "addTrustedIssuer") {
         trustedIssuers[_issuer] = true;
     }
 
+    event LogNewCredential(address _issuer, string name);
     /// @notice store a new credential on this contract 
     function storeCredential(
         address _issuer,
@@ -72,6 +73,7 @@ contract Holder {
                 _recipient,
                 _txKey
         ));
+        LogNewCredential(_issuer, _name);
     }
 
     function verifyCredential(uint credentialIndex) constant public returns(bool verified, string message) {
