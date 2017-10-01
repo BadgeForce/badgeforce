@@ -1,11 +1,11 @@
 pragma solidity ^0.4.15;
 
-import "./BadgeLibrary.sol";
+import "BadgeLibrary/contracts/BadgeLibrary.sol";
 import "./Holder.sol";
-import "./BadgeForceToken.sol";
+import "BadgeForceToken/contracts/BadgeForceToken.sol";
 
 
-contract Issuer {
+contract Issuer { 
 
     //access the badgeforce token contract
     BadgeForceToken constant BFT = BadgeForceToken(0x960632c568213c2b583578a7dc7eb4cd2b2bbbfb);

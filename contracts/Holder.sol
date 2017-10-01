@@ -1,6 +1,6 @@
 pragma solidity ^0.4.15;
 
-import "./BadgeLibrary.sol";
+import "BadgeLibrary/contracts/BadgeLibrary.sol";
 import "./Issuer.sol";
 
 

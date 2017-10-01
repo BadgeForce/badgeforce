@@ -1,9 +1,14 @@
 {
   "name": "badgeforce",
   "version": "0.0.1",
-  "description": "Issuer and Holder contracts",
+  "description": "Isssuer and Holder contracts",
   "main": "index.js",
   "repository": "https://github.com/BadgeForce/badgeforce.git",
   "author": "engineering@badgeforce.io",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "BadgeForceToken": "https://github.com/BadgeForce/BadgeForceToken.git#0.0.1",
+    "BadgeLibrary": "https://github.com/BadgeForce/BadgeLibrary.git#0.0.1",
+    "babel-register": "^6.26.0"
+  }
 }
