@@ -1,6 +1,6 @@
 {
   "name": "badgeforce",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Isssuer and Holder contracts",
   "main": "index.js",
   "repository": "https://github.com/BadgeForce/badgeforce.git",
