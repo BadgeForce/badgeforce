@@ -8,7 +8,7 @@ import "./Holder.sol";
 
 contract Issuer {
     //access the badgeforce token contract
-    BadgeForceToken constant BFT;
+    BadgeForceToken private BFT;
     address constant NONE = 0x0000000000000000000000000000000000000000;
     /// @notice the god account for this contract
     address public admin;
@@ -51,11 +51,11 @@ contract Issuer {
         BFT = BadgeForceToken(0x960632c568213c2b583578a7dc7eb4cd2b2bbbfb);
     }
 
-    event AuthorizeAttempt(address _actor, bool, authorized);
+    event AuthorizeAttempt(address _actor, bool authorized);
     /// @notice make sure caller is the issuer that owns this contract because badgeforce tokens will be used 
     modifier authorized(bytes _sig, bytes32 _hash) {
-        _issuer = extractAddress(_hash, _sig);
-        authorized = _issuer == admin || authorizedAccounts[_issuer];
+        address _issuer = extractAddress(_hash, _sig);
+        bool authorized = (_issuer == admin || authorizedAccounts[_issuer]);
         AuthorizeAttempt(_issuer, authorized);
         require(authorized);
         _;
@@ -63,8 +63,8 @@ contract Issuer {
     
     /// @notice make sure caller is the admin of this contract
     modifier onlyAdmin(bytes _sig, bytes32 _hash) {
-        _issuer = extractAddress(_hash, _sig);
-        authorized = _issuer == admin;
+        address _issuer = extractAddress(_hash, _sig);
+        bool authorized = (_issuer == admin);
         AuthorizeAttempt(_issuer, authorized);
         require(authorized);
         _;
@@ -153,7 +153,7 @@ contract Issuer {
         string _json, bytes _sig, bytes32 _hash)     
         authorized(_sig, _hash) uniqueBadge(_name) public
         {   
-        require(BFT.payForCreateBadge(issuer)); 
+        require(BFT.payForCreateBadge(extractAddress(_hash, _sig))); 
         _createBadge(
             issuerContract, 
             _description, 
@@ -179,7 +179,7 @@ contract Issuer {
         bytes _sig, bytes32 _hash) 
     public authorized(_sig, _hash)
     {
-        require(BFT.payForIssueCredential(issuer));
+        require(BFT.payForIssueCredential(extractAddress(_hash, _sig)));
         bytes32 _txtKey = _getTxtKey(msg.data);
         _setNewTxt(_txtKey, _recipient, _badgeName);
         uint expires;
@@ -354,7 +354,7 @@ contract Issuer {
     authorized(_sig, _hash)
     public returns(bool success) 
     {
-        require(BFT.payForDeleteBadge(issuer));
+        require(BFT.payForDeleteBadge(extractAddress(_hash, _sig)));
         bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
         uint rowToDelete = badgeVault.badges[badgeNameHash].index; 
         bytes32 rowToMove = badgeVault.badgeHashNames[badgeVault.badgeHashNames.length-1]; 
