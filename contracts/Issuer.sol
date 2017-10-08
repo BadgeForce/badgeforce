@@ -1,17 +1,19 @@
 pragma solidity ^0.4.15;
 
 import "BadgeLibrary/contracts/BadgeLibrary.sol";
-import "./Holder.sol";
 import "BadgeForceToken/contracts/BadgeForceToken.sol";
 
+import "./Holder.sol";
 
-contract Issuer { 
 
+contract Issuer {
     //access the badgeforce token contract
-    BadgeForceToken constant BFT = BadgeForceToken(0x960632c568213c2b583578a7dc7eb4cd2b2bbbfb);
+    BadgeForceToken constant BFT;
     address constant NONE = 0x0000000000000000000000000000000000000000;
-    /// @notice where issuer holds their badgeforce tokens 
-    address public issuer;
+    /// @notice the god account for this contract
+    address public admin;
+    /// @notice authorized issuers on this contract
+    mapping (address=>bool) private authorizedAccounts;
 
     /// @notice address of this contract 
     address public issuerContract; 
@@ -40,18 +42,73 @@ contract Issuer {
     /// @notice storage for earnable badges 
     Vault badgeVault;
 
-    function Issuer(address _issuer, string _name, string _url) {
-        issuer = _issuer;
+    function Issuer(address _issuer, string _name, string _url, address _token) {
+        admin = _issuer;
         name = _name;
         url = _url;
         issuerContract = address(this);
         nonce = 0;
+        BFT = BadgeForceToken(0x960632c568213c2b583578a7dc7eb4cd2b2bbbfb);
     }
 
+    event AuthorizeAttempt(address _actor, bool, authorized);
     /// @notice make sure caller is the issuer that owns this contract because badgeforce tokens will be used 
-    modifier onlyOwner(address _issuer) {
-        require(msg.sender == _issuer);
+    modifier authorized(bytes _sig, bytes32 _hash) {
+        _issuer = extractAddress(_hash, _sig);
+        authorized = _issuer == admin || authorizedAccounts[_issuer];
+        AuthorizeAttempt(_issuer, authorized);
+        require(authorized);
         _;
+    }
+    
+    /// @notice make sure caller is the admin of this contract
+    modifier onlyAdmin(bytes _sig, bytes32 _hash) {
+        _issuer = extractAddress(_hash, _sig);
+        authorized = _issuer == admin;
+        AuthorizeAttempt(_issuer, authorized);
+        require(authorized);
+        _;
+    }
+    
+    function extractAddress(bytes32 _hash, bytes _sig) constant returns(address _issuer) {
+        bytes32 r;
+        bytes32 s;
+        uint8 v;
+
+        if (_sig.length != 65)
+          return 0;
+
+        // The signature format is a compact form of:
+        //   {bytes32 r}{bytes32 s}{uint8 v}
+        // Compact means, uint8 is not padded to 32 bytes.
+        assembly {
+            r := mload(add(_sig, 32))
+            s := mload(add(_sig, 64))
+
+            // Here we are loading the last 32 bytes. We exploit the fact that
+            // 'mload' will pad with zeroes if we overread.
+            // There is no 'mload8' to do this, but that would be nicer.
+            v := byte(0, mload(add(_sig, 96)))
+
+            // Alternative solution:
+            // 'byte' is not working due to the Solidity parser, so lets
+            // use the second best option, 'and'
+            // v := and(mload(add(sig, 65)), 255)
+        }
+
+        // albeit non-transactional signatures are not specified by the YP, one would expect it
+        // to match the YP range of [27, 28]
+        //
+        // geth uses [0, 1] and some clients have followed. This might change, see:
+        //  https://github.com/ethereum/go-ethereum/issues/2053
+        if (v < 27)
+          v += 27;
+
+        if (v != 27 && v != 28)
+            return 0;
+
+        _issuer = ecrecover(_hash, v, r, s);
+        return _issuer;
     }
 
     /// @notice makes sure badge is unique
@@ -93,17 +150,18 @@ contract Issuer {
         string _name,
         string _image,
         string _version, 
-        string _json) onlyOwner(issuer) uniqueBadge(_name) public
+        string _json, bytes _sig, bytes32 _hash)     
+        authorized(_sig, _hash) uniqueBadge(_name) public
         {   
         //require(BFT.payForCreateBadge(issuer)); 
-        _createBadge(
+        /*_createBadge(
             issuerContract, 
             _description, 
             _name, 
             _image, 
             _version, 
             _json
-        );
+        );*/
     }
 
     event LogIssueCredential(
@@ -114,8 +172,12 @@ contract Issuer {
     /// @param _badgeName name of the badge to issue 
     /// @param _recipient address of the recipient contract
     /// @param _expires expire date (number of weeks)
-    function issue(string _badgeName, address _recipient, uint _expires) 
-    public onlyOwner(issuer)
+    function issue(
+        string _badgeName, 
+        address _recipient, 
+        uint _expires,
+        bytes _sig, bytes32 _hash) 
+    public authorized(_sig, _hash)
     {
         //require(BFT.payForIssueCredential(issuer));
         bytes32 _txtKey = _getTxtKey(msg.data);
@@ -135,8 +197,23 @@ contract Issuer {
     }
     
     /// @notice revoke a credential
-    function revoke(bytes32 _txKey) public onlyOwner(issuer) {
+    function revoke(bytes32 _txKey, bytes _sig, bytes32 _hash) public authorized(_sig, _hash) {
         revokationMap[_txKey] = true;
+    }
+
+    /// @notice unrevoke a credential
+    function unRevoke(bytes32 _txKey, bytes _sig, bytes32 _hash) public authorized(_sig, _hash) {
+        revokationMap[_txKey] = false;
+    }
+
+    /// @notice add a new account that will be able to issue credentials from this contract
+    function authorzeAccount(address _newIssuer, bytes _sig, bytes32 _hash) public onlyAdmin(_sig, _hash) {
+        authorizedAccounts[_newIssuer] = true;
+    }
+
+    /// @notice remove an authorized issuer from this contract 
+    function removeAuthorizedAccount(address _issuer, bytes _sig, bytes32 _hash) public onlyAdmin(_sig, _hash) {
+        authorizedAccounts[_issuer] = false;
     }
 
     /// @notice check if credential is revoked
@@ -161,7 +238,11 @@ contract Issuer {
     /// @notice set a new transaction (credential issued to recipient)
     /// @param _txtKey the transaction key 
     /// @param _recipient recipient of the credential 
-    function _setNewTxt(bytes32 _txtKey, address _recipient, string _badgeName) private onlyOwner(issuer) {
+    function _setNewTxt(
+        bytes32 _txtKey, 
+        address _recipient, 
+        string _badgeName) private
+        {
         //increase nonce
         nonce++;
         bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_badgeName);
@@ -269,7 +350,10 @@ contract Issuer {
 
     event LogDeleteBadge(string _name, uint count);
     /// @notice delete a created badge 
-    function deleteBadge(string _name) onlyOwner(issuer) badgeExistsN(_name) public returns(bool success) {
+    function deleteBadge(string _name, bytes _sig, bytes32 _hash) 
+    authorized(_sig, _hash)
+    public returns(bool success) 
+    {
         //require(BFT.payForDeleteBadge(issuer));
         bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
         uint rowToDelete = badgeVault.badges[badgeNameHash].index; 
@@ -281,8 +365,10 @@ contract Issuer {
         return true;
     }
  
-    // @notice get the number of badges (used by frontend as iterator index to retrieve each badge)
-    function getNumberOfBadges() constant public returns(uint count) {
+    // @notice get the number of badges (used by frontend as iterator index to retrieve each badge)     authorized(_sig, _v, _r, _s) 
+    function getNumberOfBadges()
+    constant public returns(uint count)
+    {   
         return badgeVault.badgeHashNames.length;
     }
 
@@ -308,6 +394,6 @@ contract Issuer {
 
     /// @notice get issuer info
     function getInfo() public constant returns(address _issuer, address _contract, string _name, string _url) {
-        return(issuer, issuerContract, name, url);
+        return(admin, issuerContract, name, url);
     }
-} 
+}

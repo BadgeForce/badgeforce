@@ -1,14 +1,15 @@
-var MetaCoin = artifacts.require("./MetaCoin.sol");
+var Issuer = artifacts.require("./Issuer.sol");
+var fixtures = require("./fixtures");
 
-contract('MetaCoin', function(accounts) {
-  it("should put 10000 MetaCoin in the first account", function() {
-    return MetaCoin.deployed().then(function(instance) {
-      return instance.getBalance.call(accounts[0]);
+/*contract('Issuer', function(accounts) {
+  it("should get issuer info", function() {
+    return Issuer.deployed().then(function(instance) {
+      return instance.getInfo.call(accounts[0]);
     }).then(function(balance) {
       assert.equal(balance.valueOf(), 10000, "10000 wasn't in the first account");
     });
   });
-  it("should call a function that depends on a linked library", function() {
+  /*it("should call a function that depends on a linked library", function() {
     var meta;
     var metaCoinBalance;
     var metaCoinEthBalance;
@@ -24,9 +25,9 @@ contract('MetaCoin', function(accounts) {
     }).then(function() {
       assert.equal(metaCoinEthBalance, 2 * metaCoinBalance, "Library function returned unexpeced function, linkage may be broken");
     });
-  });
+  });*/
 
-  it("should send coin correctly", function() {
+  /*it("should send coin correctly", function() {
     var meta;
 
     //    Get initial balances of first and second account.
@@ -60,5 +61,5 @@ contract('MetaCoin', function(accounts) {
       assert.equal(account_one_ending_balance, account_one_starting_balance - amount, "Amount wasn't correctly taken from the sender");
       assert.equal(account_two_ending_balance, account_two_starting_balance + amount, "Amount wasn't correctly sent to the receiver");
     });
-  });
-});
+  });*/
+//});
