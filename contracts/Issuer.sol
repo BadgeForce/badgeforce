@@ -153,15 +153,15 @@ contract Issuer {
         string _json, bytes _sig, bytes32 _hash)     
         authorized(_sig, _hash) uniqueBadge(_name) public
         {   
-        //require(BFT.payForCreateBadge(issuer)); 
-        /*_createBadge(
+        require(BFT.payForCreateBadge(issuer)); 
+        _createBadge(
             issuerContract, 
             _description, 
             _name, 
             _image, 
             _version, 
             _json
-        );*/
+        );
     }
 
     event LogIssueCredential(
@@ -179,7 +179,7 @@ contract Issuer {
         bytes _sig, bytes32 _hash) 
     public authorized(_sig, _hash)
     {
-        //require(BFT.payForIssueCredential(issuer));
+        require(BFT.payForIssueCredential(issuer));
         bytes32 _txtKey = _getTxtKey(msg.data);
         _setNewTxt(_txtKey, _recipient, _badgeName);
         uint expires;
@@ -354,7 +354,7 @@ contract Issuer {
     authorized(_sig, _hash)
     public returns(bool success) 
     {
-        //require(BFT.payForDeleteBadge(issuer));
+        require(BFT.payForDeleteBadge(issuer));
         bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
         uint rowToDelete = badgeVault.badges[badgeNameHash].index; 
         bytes32 rowToMove = badgeVault.badgeHashNames[badgeVault.badgeHashNames.length-1]; 
