@@ -26,11 +26,13 @@ contract Holder {
         holder = _holder;
     }
 
-    event LogAccessAttempt(address _caller, string _func);
-    /// @notice make sure caller is the holder that owns this contract because badgeforce tokens will be used 
-    modifier onlyHolder(address _holder, string _func) {
-        LogAccessAttempt(_holder, _func);
-        require(msg.sender == _holder);
+    event AuthorizeAttempt(address _actor, bool authorized);
+    /// @notice make sure caller is the issuer that owns this contract because badgeforce tokens will be used 
+    modifier authorized(bytes _sig, bytes32 _hash) {
+        address _holder = extractAddress(_hash, _sig);
+        bool isAuthorized = (_holder == holder);
+        AuthorizeAttempt(_holder, isAuthorized);
+        require(isAuthorized);
         _;
     }
 
@@ -43,8 +45,13 @@ contract Holder {
     }
 
     /// @notice add a new trusted issuer 
-    function addTrustedIssuer(address _issuer) public onlyHolder(holder, "addTrustedIssuer") {
+    function addTrustedIssuer(address _issuer, bytes _sig, bytes32 _hash) public authorized(_sig, _hash) {
         trustedIssuers[_issuer] = true;
+    }
+
+    /// @notice add a new trusted issuer 
+    function removeTrustedIssuer(address _issuer, bytes _sig, bytes32 _hash) public authorized(_sig, _hash) {
+        trustedIssuers[_issuer] = false;
     }
 
     event LogNewCredential(address _issuer, string name);
@@ -134,5 +141,46 @@ contract Holder {
     /// @notice get number of credentials 
     function getNumberOfCredentials() constant public returns(uint count) {
         return credentials.length;
+    }
+
+    function extractAddress(bytes32 _hash, bytes _sig) constant returns(address _issuer) {
+        bytes32 r;
+        bytes32 s;
+        uint8 v;
+
+        if (_sig.length != 65)
+          return 0;
+
+        // The signature format is a compact form of:
+        //   {bytes32 r}{bytes32 s}{uint8 v}
+        // Compact means, uint8 is not padded to 32 bytes.
+        assembly {
+            r := mload(add(_sig, 32))
+            s := mload(add(_sig, 64))
+
+            // Here we are loading the last 32 bytes. We exploit the fact that
+            // 'mload' will pad with zeroes if we overread.
+            // There is no 'mload8' to do this, but that would be nicer.
+            v := byte(0, mload(add(_sig, 96)))
+
+            // Alternative solution:
+            // 'byte' is not working due to the Solidity parser, so lets
+            // use the second best option, 'and'
+            // v := and(mload(add(sig, 65)), 255)
+        }
+
+        // albeit non-transactional signatures are not specified by the YP, one would expect it
+        // to match the YP range of [27, 28]
+        //
+        // geth uses [0, 1] and some clients have followed. This might change, see:
+        //  https://github.com/ethereum/go-ethereum/issues/2053
+        if (v < 27)
+          v += 27;
+
+        if (v != 27 && v != 28)
+            return 0;
+
+        _issuer = ecrecover(_hash, v, r, s);
+        return _issuer;
     }
 }
