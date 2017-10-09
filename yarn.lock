@@ -2,15 +2,17 @@
 # yarn lockfile v1
 
 
-"BadgeForceToken@https://github.com/BadgeForce/BadgeForceToken.git#0.0.1":
-  version "0.0.1"
-  resolved "https://github.com/BadgeForce/BadgeForceToken.git#4704ca72cdfabc861600bbf398349238137a2e3d"
+"BadgeForceToken@https://github.com/BadgeForce/BadgeForceToken.git#0.0.2":
+  version "0.0.2"
+  resolved "https://github.com/BadgeForce/BadgeForceToken.git#a281826ef23b96796d69ace3e2bfb0cdc99eac95"
   dependencies:
     babel-register "^6.26.0"
 
 "BadgeLibrary@https://github.com/BadgeForce/BadgeLibrary.git#0.0.1":
   version "0.0.1"
-  resolved "https://github.com/BadgeForce/BadgeLibrary.git#2588575a2a539b8fd30234e252a5fef2ad5b00ab"
+  resolved "https://github.com/BadgeForce/BadgeLibrary.git#9ba3ffee8dfd386ded7ffa668dcf231403a3b073"
+  dependencies:
+    BadgeLibrary "https://github.com/BadgeForce/BadgeLibrary.git#0.0.1"
 
 ansi-regex@^2.0.0:
   version "2.1.1"
