@@ -1687,8 +1687,63 @@
       },
       "address": "0x673e6e5e23d1ca14165e052d0b2f6f6e8be104cc",
       "updated_at": 1507527645802
+    },
+    "1507605619746": {
+      "events": {
+        "0x7fca019a0a52664785803f352d793a992f66c4affa261b3daf127976e7ad6799": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_actor",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "authorized",
+              "type": "bool"
+            }
+          ],
+          "name": "AuthorizeAttempt",
+          "type": "event"
+        },
+        "0x2bf8ea5a40db67784aa965ddf3e37384c79dbaf6178e1c7b8e3be19f22f84b9c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_caller",
+              "type": "address"
+            }
+          ],
+          "name": "LogStoreAttempt",
+          "type": "event"
+        },
+        "0xa23a4fd21913bfd48f69ff95304e8197b3669fafcd04261ae71e74acfc1ea153": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_issuer",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "name",
+              "type": "string"
+            }
+          ],
+          "name": "LogNewCredential",
+          "type": "event"
+        }
+      },
+      "links": {
+        "BadgeLibrary": "0xcc725319d84ca947ceab32cf9c8816e541091537"
+      },
+      "address": "0x44a24e44152e9ffdf75d29a6a871e6abd7d654ad",
+      "updated_at": 1507605722045
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1507527645802
+  "updated_at": 1507605722045
 }

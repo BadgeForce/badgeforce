@@ -2685,8 +2685,85 @@
       },
       "address": "0xd06ff261957cf5e1c5d6c2d7b3e4140151907cab",
       "updated_at": 1507527645796
+    },
+    "1507605619746": {
+      "events": {
+        "0x7fca019a0a52664785803f352d793a992f66c4affa261b3daf127976e7ad6799": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_actor",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "name": "authorized",
+              "type": "bool"
+            }
+          ],
+          "name": "AuthorizeAttempt",
+          "type": "event"
+        },
+        "0x58e5fe148ff509d33f56511e90a0e786aa936466bc4c6b8a80619fe892c8e60c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_name",
+              "type": "string"
+            },
+            {
+              "indexed": true,
+              "name": "_issuer",
+              "type": "address"
+            }
+          ],
+          "name": "LogCreateBadge",
+          "type": "event"
+        },
+        "0xe45471a70647c69821a3c36f948fcd94554cb6ee3703a7cdd9fce55b8f01c2b4": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_badgeName",
+              "type": "string"
+            },
+            {
+              "indexed": true,
+              "name": "_recipient",
+              "type": "address"
+            }
+          ],
+          "name": "LogIssueCredential",
+          "type": "event"
+        },
+        "0x0ac4f547ae3bff1a386f3a23703b77f3a92553c1401e52c06ba5de7574171a60": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "name": "_name",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "name": "count",
+              "type": "uint256"
+            }
+          ],
+          "name": "LogDeleteBadge",
+          "type": "event"
+        }
+      },
+      "links": {
+        "BadgeLibrary": "0xcc725319d84ca947ceab32cf9c8816e541091537"
+      },
+      "address": "0x3f9506d65e3c9e1944eb8426b8d9e270d5d5ef24",
+      "updated_at": 1507605722040
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1507527645796
+  "updated_at": 1507605722040
 }

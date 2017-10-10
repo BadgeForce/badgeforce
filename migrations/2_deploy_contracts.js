@@ -5,8 +5,8 @@ var BadgeLibrary = artifacts.require("BadgeLibrary.sol");
 module.exports = function (deployer) {
   deployer.deploy([BadgeLibrary]);
   deployer.link(BadgeLibrary,[Issuer, Holder]);  
-  deployer.deploy(Issuer, '0xbb316db4ad6f4c5d06f913ea6607aa33037e859a', "BadgeForce Engineering", "https://github.com/badgeforce", "0x8e122cdf13027ee6fd34de7af5673abb570d1e7e");
-  deployer.deploy(Holder, '0xbb316db4ad6f4c5d06f913ea6607aa33037e859a');
+  deployer.deploy(Issuer, '0x94e291182fa824d6d38d8f5bb8d44ebe90aab7c1', "BadgeForce Engineering", "https://github.com/badgeforce", "0x674cad751e8a6e23bed04d3fe192188b04fa823f");
+  deployer.deploy(Holder, '0x94e291182fa824d6d38d8f5bb8d44ebe90aab7c1');
 }; 
 
 /*
