@@ -7,8 +7,8 @@
   "author": "engineering@badgeforce.io",
   "license": "MIT",
   "dependencies": {
-    "BadgeForceToken": "git+ssh://git@github.com/BadgeForce/BadgeForceToken.git#0.0.2",
-    "BadgeLibrary": "git+ssh://git@github.com/BadgeForce/BadgeLibrary.git#0.0.1",
+    "BadgeForceToken": "BadgeForce/BadgeForceToken.git#0.0.2",
+    "BadgeLibrary": "BadgeForce/BadgeLibrary.git#0.0.1",
     "babel-register": "^6.26.0"
   }
 }
