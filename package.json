@@ -8,7 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "BadgeForceToken": "BadgeForce/BadgeForceToken.git#0.0.2",
-    "BadgeLibrary": "BadgeForce/BadgeLibrary.git#0.0.1",
+    "BadgeLibrary": "BadgeForce/BadgeLibrary.git",
     "babel-register": "^6.26.0"
   }
 }
