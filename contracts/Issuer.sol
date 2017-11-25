@@ -12,8 +12,16 @@ contract Issuer {
     address constant NONE = 0x0000000000000000000000000000000000000000;
     /// @notice the god account for this contract
     address public admin;
+
+    struct AuthorizedAccount {
+        address issuer;
+        uint index;
+        bool isAuthorized;
+    }
     /// @notice authorized issuers on this contract
-    mapping (address=>bool) private authorizedAccounts;
+    mapping (address=>AuthorizedAccount) public authorizedAccountsMap;
+    /// @notice list of authorized acounts
+    address[] authorizedAccountsList;
 
     /// @notice address of this contract 
     address public issuerContract; 
@@ -53,17 +61,15 @@ contract Issuer {
 
     event AuthorizeAttempt(address _actor, bool authorized);
     /// @notice make sure caller is the issuer that owns this contract because badgeforce tokens will be used 
-    modifier authorized(bytes _sig, bytes32 _hash) {
-        address _issuer = extractAddress(_hash, _sig);
-        bool isAuthorized = (_issuer == admin || authorizedAccounts[_issuer]);
+    modifier authorized(address _issuer) {
+        bool isAuthorized = (_issuer == admin || authorizedAccountsMap[_issuer].isAuthorized);
         AuthorizeAttempt(_issuer, isAuthorized);
         require(isAuthorized);
         _;
     }
     
     /// @notice make sure caller is the admin of this contract
-    modifier onlyAdmin(bytes _sig, bytes32 _hash) {
-        address _issuer = extractAddress(_hash, _sig);
+    modifier onlyAdmin(address _issuer) {
         bool isAuthorized = (_issuer == admin);
         AuthorizeAttempt(_issuer, isAuthorized);
         require(isAuthorized);
@@ -94,7 +100,7 @@ contract Issuer {
         _;
     }
 
-    event LogCreateBadge(
+    event BadgeCreated(
         string _name,
         address indexed _issuer
     ); 
@@ -109,10 +115,10 @@ contract Issuer {
         string _name,
         string _image,
         string _version, 
-        string _json, bytes _sig, bytes32 _hash)     
-        authorized(_sig, _hash) uniqueBadge(_name) public
+        string _json)     
+        authorized(msg.sender) uniqueBadge(_name) public
         {   
-        require(BFT.payForCreateBadge(extractAddress(_hash, _sig))); 
+        require(BFT.payForCreateBadge(msg.sender)); 
         _createBadge(
             issuerContract, 
             _description, 
@@ -164,22 +170,21 @@ contract Issuer {
         return _issuer;
     }
 
-    event LogIssueCredential(
+    event CredentialIssued(
         string _badgeName,
         address indexed _recipient
     );
     /// @notice issue a new credential to a recipient contract
     /// @param _badgeName name of the badge to issue 
-    /// @param _recipient address of the recipient contract
+    /// @param _recipient address of the holder contract
     /// @param _expires expire date (number of weeks)
     function issue(
         string _badgeName, 
         address _recipient, 
-        uint _expires,
-        bytes _sig, bytes32 _hash) 
-    public authorized(_sig, _hash)
+        uint _expires) 
+    public authorized(msg.sender)
     {
-        require(BFT.payForIssueCredential(extractAddress(_hash, _sig)));
+        require(BFT.payForIssueCredential(msg.sender));
         bytes32 _txtKey = _getTxtKey(msg.data);
         _setNewTxt(_txtKey, _recipient, _badgeName);
         uint expires;
@@ -196,24 +201,49 @@ contract Issuer {
         );
     }
     
+    event CredentialRevoked(bytes32 _txKey);
     /// @notice revoke a credential
-    function revoke(bytes32 _txKey, bytes _sig, bytes32 _hash) public authorized(_sig, _hash) {
+    function revoke(bytes32 _txKey) public authorized(msg.sender) {
         revokationMap[_txKey] = true;
+        CredentialRevoked(_txKey);
     }
 
+    event CredentialUnRevoked(bytes32 _txKey);
     /// @notice unrevoke a credential
-    function unRevoke(bytes32 _txKey, bytes _sig, bytes32 _hash) public authorized(_sig, _hash) {
+    function unRevoke(bytes32 _txKey) public authorized(msg.sender) {
         revokationMap[_txKey] = false;
+        CredentialUnRevoked(_txKey);
     }
 
+    event NewAccountAuthorized(address _newIssuer);
     /// @notice add a new account that will be able to issue credentials from this contract
-    function authorzeAccount(address _newIssuer, bytes _sig, bytes32 _hash) public onlyAdmin(_sig, _hash) {
-        authorizedAccounts[_newIssuer] = true;
+    function authorzeAccount(address _newIssuer) public onlyAdmin(msg.sender) {
+        authorizedAccountsMap[_newIssuer] = AuthorizedAccount(_newIssuer, authorizedAccountsList.push(_newIssuer)-1, true);
+        NewAccountAuthorized(_newIssuer);
     }
 
+    event AuthorizedAccountRemoved(address _issuer);
     /// @notice remove an authorized issuer from this contract 
-    function removeAuthorizedAccount(address _issuer, bytes _sig, bytes32 _hash) public onlyAdmin(_sig, _hash) {
-        authorizedAccounts[_issuer] = false;
+    /// @param _issuer address of the account that will be authorized
+    //@TODO remove account entirely from contract
+    function removeAuthorizedAccount(address _issuer) public onlyAdmin(msg.sender) {
+        authorizedAccountsMap[_issuer].isAuthorized = false;
+        AuthorizedAccountRemoved(_issuer);
+    }
+
+    /// @notice gets a authorized account, can be used in conjuntion with numOfAuthorizedAccounts to get all in UI
+    /// @param _index the index of the account in the authorizedAccountsList
+    function getAuthorizedAccount(uint _index) public returns(address _issuer) {
+        if (authorizedAccountsMap[authorizedAccountsList[_index]].isAuthorized) {
+            return authorizedAccountsList[_index];
+        } else {
+            return NONE;
+        }
+    }
+
+    /// @notice returns number of accounts ever authorized 
+    function getNumberOfAuthorizedAccounts() public returns(uint _numOfAccounts) {
+        return authorizedAccountsList.length;
     }
 
     /// @notice check if credential is revoked
@@ -301,7 +331,7 @@ contract Issuer {
             _recipient, 
             _txtKey
         );
-        LogIssueCredential(
+        CredentialIssued(
             badge.name,
             _recipient
         );
@@ -345,23 +375,24 @@ contract Issuer {
             badgeVault.badgeHashNames.push(badgeNameHash)-1
         );
         badgeVault.badges[badgeNameHash] = badge;
-        LogCreateBadge(badge.name, badge.issuer);
+        BadgeCreated(badge.name, badge.issuer);
     }
 
-    event LogDeleteBadge(string _name, uint count);
+    event BadgeDeleted(string _name, uint count);
     /// @notice delete a created badge 
-    function deleteBadge(string _name, bytes _sig, bytes32 _hash) 
-    authorized(_sig, _hash)
+    function deleteBadge(string _name) 
+    authorized(msg.sender)
     public returns(bool success) 
     {
-        require(BFT.payForDeleteBadge(extractAddress(_hash, _sig)));
+        require(BFT.payForDeleteBadge(msg.sender));
         bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
         uint rowToDelete = badgeVault.badges[badgeNameHash].index; 
-        bytes32 rowToMove = badgeVault.badgeHashNames[badgeVault.badgeHashNames.length-1]; 
+        bytes32 rowToMove = badgeVault.badgeHashNames[badgeVault.badgeHashNames.length-1];
+        badgeVault.badges[rowToMove].index = rowToDelete; 
         badgeVault.badgeHashNames[rowToDelete] = rowToMove; 
         badgeVault.badgeHashNames.length--;
         delete badgeVault.badges[badgeNameHash];
-        LogDeleteBadge(_name, badgeVault.badgeHashNames.length);
+        BadgeDeleted(_name, badgeVault.badgeHashNames.length);
         return true;
     }
  

@@ -13,7 +13,7 @@ contract Holder {
     BadgeLibrary.BFCredential[] credentials;
 
     /// @notice mapping of trusted issuers 
-    mapping (address=>bool) trustedIssuers;
+    mapping (address=>bool) public trustedIssuers;
 
     string constant INVALID_TRANSACTION = "Invalid transaction: the transaction does not exist";
     string constant INVALID_INTEGRITYHASH = "Invalid data integrity: data in credential does not match original transaction data";
@@ -28,8 +28,7 @@ contract Holder {
 
     event AuthorizeAttempt(address _actor, bool authorized);
     /// @notice make sure caller is the issuer that owns this contract because badgeforce tokens will be used 
-    modifier authorized(bytes _sig, bytes32 _hash) {
-        address _holder = extractAddress(_hash, _sig);
+    modifier authorized(address _holder) {
         bool isAuthorized = (_holder == holder);
         AuthorizeAttempt(_holder, isAuthorized);
         require(isAuthorized);
@@ -45,12 +44,12 @@ contract Holder {
     }
 
     /// @notice add a new trusted issuer 
-    function addTrustedIssuer(address _issuer, bytes _sig, bytes32 _hash) public authorized(_sig, _hash) {
+    function addTrustedIssuer(address _issuer) public authorized(msg.sender) {
         trustedIssuers[_issuer] = true;
     }
 
     /// @notice add a new trusted issuer 
-    function removeTrustedIssuer(address _issuer, bytes _sig, bytes32 _hash) public authorized(_sig, _hash) {
+    function removeTrustedIssuer(address _issuer) public authorized(msg.sender) {
         trustedIssuers[_issuer] = false;
     }
 

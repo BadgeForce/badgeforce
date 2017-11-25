@@ -1,5 +1,5 @@
 {
-  "contract_name": "PaymentLibrary",
+  "contractName": "PaymentLibrary",
   "abi": [
     {
       "constant": true,
@@ -12,7 +12,8 @@
         }
       ],
       "payable": false,
-      "type": "function"
+      "type": "function",
+      "stateMutability": "view"
     },
     {
       "constant": true,
@@ -25,7 +26,8 @@
         }
       ],
       "payable": false,
-      "type": "function"
+      "type": "function",
+      "stateMutability": "view"
     },
     {
       "constant": true,
@@ -38,7 +40,8 @@
         }
       ],
       "payable": false,
-      "type": "function"
+      "type": "function",
+      "stateMutability": "view"
     },
     {
       "constant": true,
@@ -51,24 +54,846 @@
         }
       ],
       "payable": false,
-      "type": "function"
+      "type": "function",
+      "stateMutability": "view"
     }
   ],
-  "unlinked_binary": "0x6060604052341561000f57600080fd5b5b61011c8061001f6000396000f300606060405263ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416636a0452dd8114605a5780636c398381146072578063d57b55e814608a578063df35e5901460a2575b600080fd5b606060ba565b60405190815260200160405180910390f35b606060c8565b60405190815260200160405180910390f35b606060d5565b60405190815260200160405180910390f35b606060e2565b60405190815260200160405180910390f35b68015af1d78b58c400005b90565b67a688906bd8b000005b90565b67d02ab486cedc00005b90565b6802b5e3af16b18800005b905600a165627a7a72305820249f217fb3bacd1e7412d1c011b14bf2120f732e60e551a76e0860b236c484290029",
-  "networks": {
-    "1506480242653": {
-      "events": {},
-      "links": {},
-      "address": "0x09cf54f2e731f4509036cfc2779c44b6367af366",
-      "updated_at": 1506483028122
+  "bytecode": "0x6060604052341561000f57600080fd5b6101578061001e6000396000f300606060405260043610610062576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680636a0452dd146100675780636c39838114610085578063d57b55e8146100a3578063df35e590146100c1575b600080fd5b61006f6100df565b6040518082815260200191505060405180910390f35b61008d6100f2565b6040518082815260200191505060405180910390f35b6100ab610105565b6040518082815260200191505060405180910390f35b6100c9610118565b6040518082815260200191505060405180910390f35b6000670de0b6b3a7640000601902905090565b6000670de0b6b3a7640000600c02905090565b6000670de0b6b3a7640000600f02905090565b6000670de0b6b3a76400006032029050905600a165627a7a723058209470444517b0221324591bb7260508d747ca88bb7839073fc9a8089e818f3d570029",
+  "deployedBytecode": "0x606060405260043610610062576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680636a0452dd146100675780636c39838114610085578063d57b55e8146100a3578063df35e590146100c1575b600080fd5b61006f6100df565b6040518082815260200191505060405180910390f35b61008d6100f2565b6040518082815260200191505060405180910390f35b6100ab610105565b6040518082815260200191505060405180910390f35b6100c9610118565b6040518082815260200191505060405180910390f35b6000670de0b6b3a7640000601902905090565b6000670de0b6b3a7640000600c02905090565b6000670de0b6b3a7640000600f02905090565b6000670de0b6b3a76400006032029050905600a165627a7a723058209470444517b0221324591bb7260508d747ca88bb7839073fc9a8089e818f3d570029",
+  "sourceMap": "27:719:4:-;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "27:719:4:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;300:102;;;;;;;;;;;;;;;;;;;;;;;642;;;;;;;;;;;;;;;;;;;;;;;524:112;;;;;;;;;;;;;;;;;;;;;;;408:110;;;;;;;;;;;;;;;;;;;;;;;300:102;347:12;78:6;127:2;:7;371:24;;300:102;:::o;642:::-;689:12;78:6;177:2;:7;713:24;;642:102;:::o;524:112::-;576:12;78:6;286:2;:7;600:29;;524:112;:::o;408:110::-;459:12;78:6;231:2;:7;483:28;;408:110;:::o",
+  "source": "pragma solidity ^0.4.15;\n\n\nlibrary PaymentLibrary {\n\n    uint constant BASE = 10**18;\n    uint256 constant CREATE_BADGE_COST = 25*BASE;\n    uint256 constant DELETE_BADGE_COST = 12*BASE;\n    uint256 constant ISSUE_CREDENTIAL_COST = 50*BASE;\n    uint256 constant VERIFY_CREDENTIAL_COST = 15*BASE;\n\n    function getCreateBadgeCost() constant returns(uint256 cost) {\n        return CREATE_BADGE_COST;\n    }\n\n    function getIssueCredentialCost() constant returns(uint256 cost) {\n        return ISSUE_CREDENTIAL_COST;\n    }\n\n    function getVerifyCredentialCost() constant returns(uint256 cost) {\n        return VERIFY_CREDENTIAL_COST;\n    }\n\n    function payDeleteBadgeCost() constant returns(uint256 cost) {\n        return DELETE_BADGE_COST;\n    }\n}",
+  "sourcePath": "BadgeForceToken/contracts/PaymentLibrary.sol",
+  "ast": {
+    "attributes": {
+      "absolutePath": "BadgeForceToken/contracts/PaymentLibrary.sol",
+      "exportedSymbols": {
+        "PaymentLibrary": [
+          1838
+        ]
+      }
     },
-    "1506484176219": {
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "^",
+            "0.4",
+            ".15"
+          ]
+        },
+        "id": 1780,
+        "name": "PragmaDirective",
+        "src": "0:24:4"
+      },
+      {
+        "attributes": {
+          "baseContracts": [
+            null
+          ],
+          "contractDependencies": [
+            null
+          ],
+          "contractKind": "library",
+          "documentation": null,
+          "fullyImplemented": true,
+          "linearizedBaseContracts": [
+            1838
+          ],
+          "name": "PaymentLibrary",
+          "scope": 1839
+        },
+        "children": [
+          {
+            "attributes": {
+              "constant": true,
+              "name": "BASE",
+              "scope": 1838,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "uint256",
+              "visibility": "internal"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "name": "uint",
+                  "type": "uint256"
+                },
+                "id": 1781,
+                "name": "ElementaryTypeName",
+                "src": "57:4:4"
+              },
+              {
+                "attributes": {
+                  "argumentTypes": null,
+                  "commonType": {
+                    "typeIdentifier": "t_rational_1000000000000000000_by_1",
+                    "typeString": "int_const 1000000000000000000"
+                  },
+                  "isConstant": false,
+                  "isLValue": false,
+                  "isPure": true,
+                  "lValueRequested": false,
+                  "operator": "**",
+                  "type": "int_const 1000000000000000000"
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "hexvalue": "3130",
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "lValueRequested": false,
+                      "subdenomination": null,
+                      "token": "number",
+                      "type": "int_const 10",
+                      "value": "10"
+                    },
+                    "id": 1782,
+                    "name": "Literal",
+                    "src": "78:2:4"
+                  },
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "hexvalue": "3138",
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "lValueRequested": false,
+                      "subdenomination": null,
+                      "token": "number",
+                      "type": "int_const 18",
+                      "value": "18"
+                    },
+                    "id": 1783,
+                    "name": "Literal",
+                    "src": "82:2:4"
+                  }
+                ],
+                "id": 1784,
+                "name": "BinaryOperation",
+                "src": "78:6:4"
+              }
+            ],
+            "id": 1785,
+            "name": "VariableDeclaration",
+            "src": "57:27:4"
+          },
+          {
+            "attributes": {
+              "constant": true,
+              "name": "CREATE_BADGE_COST",
+              "scope": 1838,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "uint256",
+              "visibility": "internal"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "name": "uint256",
+                  "type": "uint256"
+                },
+                "id": 1786,
+                "name": "ElementaryTypeName",
+                "src": "90:7:4"
+              },
+              {
+                "attributes": {
+                  "argumentTypes": null,
+                  "commonType": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "isConstant": false,
+                  "isLValue": false,
+                  "isPure": true,
+                  "lValueRequested": false,
+                  "operator": "*",
+                  "type": "uint256"
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "hexvalue": "3235",
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "lValueRequested": false,
+                      "subdenomination": null,
+                      "token": "number",
+                      "type": "int_const 25",
+                      "value": "25"
+                    },
+                    "id": 1787,
+                    "name": "Literal",
+                    "src": "127:2:4"
+                  },
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "overloadedDeclarations": [
+                        null
+                      ],
+                      "referencedDeclaration": 1785,
+                      "type": "uint256",
+                      "value": "BASE"
+                    },
+                    "id": 1788,
+                    "name": "Identifier",
+                    "src": "130:4:4"
+                  }
+                ],
+                "id": 1789,
+                "name": "BinaryOperation",
+                "src": "127:7:4"
+              }
+            ],
+            "id": 1790,
+            "name": "VariableDeclaration",
+            "src": "90:44:4"
+          },
+          {
+            "attributes": {
+              "constant": true,
+              "name": "DELETE_BADGE_COST",
+              "scope": 1838,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "uint256",
+              "visibility": "internal"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "name": "uint256",
+                  "type": "uint256"
+                },
+                "id": 1791,
+                "name": "ElementaryTypeName",
+                "src": "140:7:4"
+              },
+              {
+                "attributes": {
+                  "argumentTypes": null,
+                  "commonType": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "isConstant": false,
+                  "isLValue": false,
+                  "isPure": true,
+                  "lValueRequested": false,
+                  "operator": "*",
+                  "type": "uint256"
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "hexvalue": "3132",
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "lValueRequested": false,
+                      "subdenomination": null,
+                      "token": "number",
+                      "type": "int_const 12",
+                      "value": "12"
+                    },
+                    "id": 1792,
+                    "name": "Literal",
+                    "src": "177:2:4"
+                  },
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "overloadedDeclarations": [
+                        null
+                      ],
+                      "referencedDeclaration": 1785,
+                      "type": "uint256",
+                      "value": "BASE"
+                    },
+                    "id": 1793,
+                    "name": "Identifier",
+                    "src": "180:4:4"
+                  }
+                ],
+                "id": 1794,
+                "name": "BinaryOperation",
+                "src": "177:7:4"
+              }
+            ],
+            "id": 1795,
+            "name": "VariableDeclaration",
+            "src": "140:44:4"
+          },
+          {
+            "attributes": {
+              "constant": true,
+              "name": "ISSUE_CREDENTIAL_COST",
+              "scope": 1838,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "uint256",
+              "visibility": "internal"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "name": "uint256",
+                  "type": "uint256"
+                },
+                "id": 1796,
+                "name": "ElementaryTypeName",
+                "src": "190:7:4"
+              },
+              {
+                "attributes": {
+                  "argumentTypes": null,
+                  "commonType": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "isConstant": false,
+                  "isLValue": false,
+                  "isPure": true,
+                  "lValueRequested": false,
+                  "operator": "*",
+                  "type": "uint256"
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "hexvalue": "3530",
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "lValueRequested": false,
+                      "subdenomination": null,
+                      "token": "number",
+                      "type": "int_const 50",
+                      "value": "50"
+                    },
+                    "id": 1797,
+                    "name": "Literal",
+                    "src": "231:2:4"
+                  },
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "overloadedDeclarations": [
+                        null
+                      ],
+                      "referencedDeclaration": 1785,
+                      "type": "uint256",
+                      "value": "BASE"
+                    },
+                    "id": 1798,
+                    "name": "Identifier",
+                    "src": "234:4:4"
+                  }
+                ],
+                "id": 1799,
+                "name": "BinaryOperation",
+                "src": "231:7:4"
+              }
+            ],
+            "id": 1800,
+            "name": "VariableDeclaration",
+            "src": "190:48:4"
+          },
+          {
+            "attributes": {
+              "constant": true,
+              "name": "VERIFY_CREDENTIAL_COST",
+              "scope": 1838,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "uint256",
+              "visibility": "internal"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "name": "uint256",
+                  "type": "uint256"
+                },
+                "id": 1801,
+                "name": "ElementaryTypeName",
+                "src": "244:7:4"
+              },
+              {
+                "attributes": {
+                  "argumentTypes": null,
+                  "commonType": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "isConstant": false,
+                  "isLValue": false,
+                  "isPure": true,
+                  "lValueRequested": false,
+                  "operator": "*",
+                  "type": "uint256"
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "hexvalue": "3135",
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "lValueRequested": false,
+                      "subdenomination": null,
+                      "token": "number",
+                      "type": "int_const 15",
+                      "value": "15"
+                    },
+                    "id": 1802,
+                    "name": "Literal",
+                    "src": "286:2:4"
+                  },
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "overloadedDeclarations": [
+                        null
+                      ],
+                      "referencedDeclaration": 1785,
+                      "type": "uint256",
+                      "value": "BASE"
+                    },
+                    "id": 1803,
+                    "name": "Identifier",
+                    "src": "289:4:4"
+                  }
+                ],
+                "id": 1804,
+                "name": "BinaryOperation",
+                "src": "286:7:4"
+              }
+            ],
+            "id": 1805,
+            "name": "VariableDeclaration",
+            "src": "244:49:4"
+          },
+          {
+            "attributes": {
+              "constant": true,
+              "implemented": true,
+              "isConstructor": false,
+              "modifiers": [
+                null
+              ],
+              "name": "getCreateBadgeCost",
+              "payable": false,
+              "scope": 1838,
+              "stateMutability": "view",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 1806,
+                "name": "ParameterList",
+                "src": "327:2:4"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "cost",
+                      "scope": 1813,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint256",
+                          "type": "uint256"
+                        },
+                        "id": 1807,
+                        "name": "ElementaryTypeName",
+                        "src": "347:7:4"
+                      }
+                    ],
+                    "id": 1808,
+                    "name": "VariableDeclaration",
+                    "src": "347:12:4"
+                  }
+                ],
+                "id": 1809,
+                "name": "ParameterList",
+                "src": "346:14:4"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "functionReturnParameters": 1809
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "overloadedDeclarations": [
+                            null
+                          ],
+                          "referencedDeclaration": 1790,
+                          "type": "uint256",
+                          "value": "CREATE_BADGE_COST"
+                        },
+                        "id": 1810,
+                        "name": "Identifier",
+                        "src": "378:17:4"
+                      }
+                    ],
+                    "id": 1811,
+                    "name": "Return",
+                    "src": "371:24:4"
+                  }
+                ],
+                "id": 1812,
+                "name": "Block",
+                "src": "361:41:4"
+              }
+            ],
+            "id": 1813,
+            "name": "FunctionDefinition",
+            "src": "300:102:4"
+          },
+          {
+            "attributes": {
+              "constant": true,
+              "implemented": true,
+              "isConstructor": false,
+              "modifiers": [
+                null
+              ],
+              "name": "getIssueCredentialCost",
+              "payable": false,
+              "scope": 1838,
+              "stateMutability": "view",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 1814,
+                "name": "ParameterList",
+                "src": "439:2:4"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "cost",
+                      "scope": 1821,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint256",
+                          "type": "uint256"
+                        },
+                        "id": 1815,
+                        "name": "ElementaryTypeName",
+                        "src": "459:7:4"
+                      }
+                    ],
+                    "id": 1816,
+                    "name": "VariableDeclaration",
+                    "src": "459:12:4"
+                  }
+                ],
+                "id": 1817,
+                "name": "ParameterList",
+                "src": "458:14:4"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "functionReturnParameters": 1817
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "overloadedDeclarations": [
+                            null
+                          ],
+                          "referencedDeclaration": 1800,
+                          "type": "uint256",
+                          "value": "ISSUE_CREDENTIAL_COST"
+                        },
+                        "id": 1818,
+                        "name": "Identifier",
+                        "src": "490:21:4"
+                      }
+                    ],
+                    "id": 1819,
+                    "name": "Return",
+                    "src": "483:28:4"
+                  }
+                ],
+                "id": 1820,
+                "name": "Block",
+                "src": "473:45:4"
+              }
+            ],
+            "id": 1821,
+            "name": "FunctionDefinition",
+            "src": "408:110:4"
+          },
+          {
+            "attributes": {
+              "constant": true,
+              "implemented": true,
+              "isConstructor": false,
+              "modifiers": [
+                null
+              ],
+              "name": "getVerifyCredentialCost",
+              "payable": false,
+              "scope": 1838,
+              "stateMutability": "view",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 1822,
+                "name": "ParameterList",
+                "src": "556:2:4"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "cost",
+                      "scope": 1829,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint256",
+                          "type": "uint256"
+                        },
+                        "id": 1823,
+                        "name": "ElementaryTypeName",
+                        "src": "576:7:4"
+                      }
+                    ],
+                    "id": 1824,
+                    "name": "VariableDeclaration",
+                    "src": "576:12:4"
+                  }
+                ],
+                "id": 1825,
+                "name": "ParameterList",
+                "src": "575:14:4"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "functionReturnParameters": 1825
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "overloadedDeclarations": [
+                            null
+                          ],
+                          "referencedDeclaration": 1805,
+                          "type": "uint256",
+                          "value": "VERIFY_CREDENTIAL_COST"
+                        },
+                        "id": 1826,
+                        "name": "Identifier",
+                        "src": "607:22:4"
+                      }
+                    ],
+                    "id": 1827,
+                    "name": "Return",
+                    "src": "600:29:4"
+                  }
+                ],
+                "id": 1828,
+                "name": "Block",
+                "src": "590:46:4"
+              }
+            ],
+            "id": 1829,
+            "name": "FunctionDefinition",
+            "src": "524:112:4"
+          },
+          {
+            "attributes": {
+              "constant": true,
+              "implemented": true,
+              "isConstructor": false,
+              "modifiers": [
+                null
+              ],
+              "name": "payDeleteBadgeCost",
+              "payable": false,
+              "scope": 1838,
+              "stateMutability": "view",
+              "superFunction": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 1830,
+                "name": "ParameterList",
+                "src": "669:2:4"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "cost",
+                      "scope": 1837,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint256",
+                          "type": "uint256"
+                        },
+                        "id": 1831,
+                        "name": "ElementaryTypeName",
+                        "src": "689:7:4"
+                      }
+                    ],
+                    "id": 1832,
+                    "name": "VariableDeclaration",
+                    "src": "689:12:4"
+                  }
+                ],
+                "id": 1833,
+                "name": "ParameterList",
+                "src": "688:14:4"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "functionReturnParameters": 1833
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "overloadedDeclarations": [
+                            null
+                          ],
+                          "referencedDeclaration": 1795,
+                          "type": "uint256",
+                          "value": "DELETE_BADGE_COST"
+                        },
+                        "id": 1834,
+                        "name": "Identifier",
+                        "src": "720:17:4"
+                      }
+                    ],
+                    "id": 1835,
+                    "name": "Return",
+                    "src": "713:24:4"
+                  }
+                ],
+                "id": 1836,
+                "name": "Block",
+                "src": "703:41:4"
+              }
+            ],
+            "id": 1837,
+            "name": "FunctionDefinition",
+            "src": "642:102:4"
+          }
+        ],
+        "id": 1838,
+        "name": "ContractDefinition",
+        "src": "27:719:4"
+      }
+    ],
+    "id": 1839,
+    "name": "SourceUnit",
+    "src": "0:746:4"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.18+commit.9cf6e910.Emscripten.clang"
+  },
+  "networks": {
+    "3000": {
       "events": {},
       "links": {},
-      "address": "0xc1c5d41f2ca73d90cc27f3f5cb075d3da36634c6",
-      "updated_at": 1506484277066
+      "address": "0xf01e4c0308b9f6520fe0e4b0365afe1d267df8c3",
+      "updated_at": 1511602864562
     }
   },
-  "schema_version": "0.0.5",
-  "updated_at": 1507527077543
+  "schemaVersion": "1.0.1",
+  "updatedAt": "2017-11-25T12:06:18.579Z"
 }
