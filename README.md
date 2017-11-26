@@ -25,7 +25,7 @@ $ ganache-cli -l 4500000000000 --network-id 3000 --port 8000
 
 Next cd into badgeforce cloned directory and run test, make sure dependencies are installed
 ```linux
-$ truffle test
+$ ganache-cli test
 ```
 
 ## Usage 
