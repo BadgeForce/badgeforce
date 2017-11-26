@@ -9,8 +9,7 @@
   "dependencies": {
     "BadgeForceToken": "https://github.com/BadgeForce/BadgeForceToken.git#0.0.2",
     "BadgeLibrary": "https://github.com/BadgeForce/BadgeLibrary.git#0.0.1",
-    "babel-register": "^6.26.0",
-    "pre-commit": "^1.2.2"
+    "babel-register": "^6.26.0"
   },
   "scripts": {
     "test": "node_modules/truffle/build/cli.bundled.js compile && node_modules/truffle/build/cli.bundled.js test"

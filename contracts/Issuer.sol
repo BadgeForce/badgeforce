@@ -247,7 +247,7 @@ contract Issuer {
     }
 
     /// @notice check if credential is revoked
-    function getRevoked(bytes32 _key) public constant returns(bool c) {
+    function isRevoked(bytes32 _key) public constant returns(bool c) {
         return revokationMap[_key];
     }
 
