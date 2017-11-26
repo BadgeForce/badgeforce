@@ -111,6 +111,7 @@ contract Holder {
 
     /// @notice get a holders credential 
     /// @param _index index of credential to return 
+    //@TODO should use hash of name or txtkey for retrieval from a map
     function getCredential(uint _index) constant public  returns (
         address _issuer,
         string _description,

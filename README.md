@@ -31,7 +31,7 @@ $ ganache-cli test
 ## Usage 
 
 Usage examples are in JavaScript using [web3](https://github.com/ethereum/web3.js/) and [truffle](https://truffleframework.com)
-* [Issuer](#Issuer)
+* [Issuer](#issuer)
     * [admin](#admin)
     * [getAuthorizedAccount](#getauthorizedaccount)
     * [authorzeAccount](#authorzeaccount)
@@ -46,8 +46,17 @@ Usage examples are in JavaScript using [web3](https://github.com/ethereum/web3.j
     * [revoke](#revoke)
     * [unRevoke](#unrevoke)
     * [isRevoked](#isrevoked)
-
+* [Holder](#holder)
+    * [getNumberOfCredentials](#getnumberofcredentials)
+    * [getCredential](#getcredential)
+    * [verifyCredential](#verifycredential)
 ***
+
+#### Issuer
+
+    Issuer.sol
+
+The Issuer smart contract acts as a representation of an issuer entity in the real world such as a univeristy or organization. You can authorized many issuers on one Issuer contract, i.e: authorizing all the deans of the math department on the Math departments Issuer contract. This way they can all issue credentials. As these contracts are further developed we will be able to represent organizations more flexibly such as chaining together Issuer contracts to make up an organization, and we will extend the capabilities of badges such as data, and relation to one another (micro badges representing courses taken within a certain program). 
 
 #### admin
 
@@ -126,7 +135,7 @@ await issuer.removeAuthorizedAccount(0x0000);
 
 #### getNumberOfAuthorizedAccounts
 
-Function gets the number of authorized accounts. A UI client or API interacting with an Issuer smart contract can use this function in conjunction with the [getAuthorizedAccount](#getAuthorizedAccount) method to retrieve all accounts authorized on the contract
+Function gets the number of authorized accounts. A UI client or API interacting with an Issuer smart contract can use this function in conjunction with the [getAuthorizedAccount](#getauthorizedaccount) method to retrieve all accounts authorized on the contract
 
 ##### Example
 
@@ -200,7 +209,7 @@ await issuer.deleteBadge(name);
 
 #### getNumberOfBadges
 
-Function is used to get the number of badges. A UI client or API interacting with an Issuer smart contract can use this function in conjunction with the [getBadge](#getBadge) method to retrieve all badges 
+Function is used to get the number of badges. A UI client or API interacting with an Issuer smart contract can use this function in conjunction with the [getBadge](#getbadge) method to retrieve all badges 
 
 ##### Example
 
@@ -293,6 +302,61 @@ Function is used to check if a credential is revoked.
 
 ```js
 const check = await issuer.isRevoked(redential._txKey);
+``` 
+
+***
+
+#### Holder
+
+    Holder.sol
+
+The Holder smart contract represents a holder or recipient of credentials, badges and certifications in the real world. This is where a holder will be able access all their earned credentials, and consumers will be able to query these contracts for credential verification. A Holder smart contract is owned by the holder in the real world by attaching it to an ethereum wallet address that they own. 
+
+ #### getNumberOfCredentials
+
+Function is used to get the number of credentials on the Holder contract. This can be used in conjunction with the [getCredential](#getcredential) function to get all the holders credentials. 
+ 
+##### Example
+
+```js
+const count = await holder.getNumberOfCredentials();
+``` 
+
+***
+
+#### getCredential
+
+Function to retrieve a credential by it's index. 
+
+##### Parameters
+
+1. `uint` - index of the credential
+
+##### Example
+
+```js
+const check = await holder.getCredential(index);
+``` 
+
+***
+
+#### verifyCredential
+
+Function is verify a credential. 
+
+##### Parameters
+
+1. `bytes32` - index of the credential
+
+##### Returns
+
+1. `bool` - true or false if the credential is verified
+2. `message` - success or failure message
+
+##### Example
+
+```js
+const check = await holder.verifyCredential(index);
 ``` 
 
 ***
