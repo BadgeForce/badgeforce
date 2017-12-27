@@ -1,14 +1,21 @@
 pragma solidity ^0.4.15;
 
 import "BadgeLibrary/contracts/BadgeLibrary.sol";
+import "BadgeLibrary/contracts/VerifierInterface.sol";
+import "BadgeLibrary/contracts/VerifierLibrary.sol";
 import "BadgeForceToken/contracts/BadgeForceToken.sol";
 
-import "./Holder.sol";
+import "./IssuerInterface.sol";
+import "./HolderInterface.sol";
 
 
-contract Issuer {
+contract Issuer is IssuerInterface {
     //access the badgeforce token contract
     BadgeForceToken private BFT;
+
+    // badgeforce verifier v1
+    VerifierInterface verifier;
+
     address constant NONE = 0x0000000000000000000000000000000000000000;
     /// @notice the god account for this contract
     address public admin;
@@ -32,7 +39,8 @@ contract Issuer {
     /// @notice mapping of badgename hash to badge
     /// @notice array of badge hash names
     struct Vault {
-        mapping (bytes32=>BadgeLibrary.BFBadge) badges;
+        mapping (bytes32=>BadgeLibrary.Badge) badges;
+        mapping (bytes32=>uint) indexMap;
         bytes32[] badgeHashNames;
     }
 
@@ -45,18 +53,19 @@ contract Issuer {
     /// @notice mapping of a unique hash to a recipient address, used to verify issuer of a credential 
     mapping (bytes32=>IssueTransaction) public credentialTxtMap;
     mapping (bytes32=>bool) public revokationMap;
-    uint private nonce;
+    uint private nonce = 0;
 
     /// @notice storage for earnable badges 
     Vault badgeVault;
 
-    function Issuer(address _issuer, string _name, string _url, address _token) {
+    function Issuer(address _issuer, string _name, string _url, address _token, address _verifier) {
         admin = _issuer;
         name = _name;
         url = _url;
         issuerContract = address(this);
         nonce = 0;
         BFT = BadgeForceToken(_token);
+        verifier = VerifierInterface(_verifier);
     }
 
     event AuthorizeAttempt(address _actor, bool authorized);
@@ -75,28 +84,22 @@ contract Issuer {
         require(isAuthorized);
         _;
     }
-    
+   
     /// @notice makes sure badge is unique
     modifier uniqueBadge(string _name) {
-        bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
-        BadgeLibrary.BFBadge memory badge = badgeVault.badges[badgeNameHash];
-        require(badgeVault.badgeHashNames.length == 0 || badgeVault.badgeHashNames[badge.index] != badgeNameHash);
+        require(isUnique(_name));
         _;
+    }
+
+    function isUnique(string _name) public constant returns(bool unique) {
+        bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
+        return (badgeVault.badgeHashNames.length == 0 || badgeVault.badgeHashNames[badgeVault.indexMap[badgeNameHash]] != badgeNameHash);
     }
 
     /// @notice checks if a badge exists by name
-    modifier badgeExistsN(string _name) {
+    modifier badgeExists(string _name) {
         bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
-        BadgeLibrary.BFBadge memory badge = badgeVault.badges[badgeNameHash];
-        require(badgeVault.badgeHashNames.length > 0 && badgeVault.badgeHashNames[badge.index] == badgeNameHash);
-        _;
-    }
-
-    /// @notice checks if a badge exists by index
-    modifier badgeExists(uint _index) {
-        BadgeLibrary.BFBadge memory badge = badgeVault.badges[badgeVault.badgeHashNames[_index]];
-        bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(badge.name);
-        require(badgeVault.badgeHashNames.length > 0 && badgeVault.badgeHashNames[_index] == badgeNameHash);
+        require(badgeVault.badgeHashNames.length > 0 && badgeVault.badgeHashNames[badgeVault.indexMap[badgeNameHash]] == badgeNameHash);
         _;
     }
 
@@ -109,65 +112,25 @@ contract Issuer {
     /// @param _name name of the badge
     /// @param _image badge image
     /// @param _version badge version
-    /// @param _json json string representation
     function createBadge(
         string _description, 
         string _name,
         string _image,
-        string _version, 
-        string _json)     
+        string _version)     
         authorized(msg.sender) uniqueBadge(_name) public
         {   
-        require(BFT.payForCreateBadge(msg.sender)); 
-        _createBadge(
-            issuerContract, 
+        bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
+        uint index = badgeVault.badgeHashNames.push(badgeNameHash)-1;
+        BadgeLibrary.Badge memory badge = BadgeLibrary.Badge(
+            address(this), 
             _description, 
-            _name, 
+            _name,
             _image, 
-            _version, 
-            _json
+            _version
         );
-    }
-
-    function extractAddress(bytes32 _hash, bytes _sig) constant returns(address _issuer) {
-        bytes32 r;
-        bytes32 s;
-        uint8 v;
-
-        if (_sig.length != 65)
-          return 0;
-
-        // The signature format is a compact form of:
-        //   {bytes32 r}{bytes32 s}{uint8 v}
-        // Compact means, uint8 is not padded to 32 bytes.
-        assembly {
-            r := mload(add(_sig, 32))
-            s := mload(add(_sig, 64))
-
-            // Here we are loading the last 32 bytes. We exploit the fact that
-            // 'mload' will pad with zeroes if we overread.
-            // There is no 'mload8' to do this, but that would be nicer.
-            v := byte(0, mload(add(_sig, 96)))
-
-            // Alternative solution:
-            // 'byte' is not working due to the Solidity parser, so lets
-            // use the second best option, 'and'
-            // v := and(mload(add(sig, 65)), 255)
-        }
-
-        // albeit non-transactional signatures are not specified by the YP, one would expect it
-        // to match the YP range of [27, 28]
-        //
-        // geth uses [0, 1] and some clients have followed. This might change, see:
-        //  https://github.com/ethereum/go-ethereum/issues/2053
-        if (v < 27)
-          v += 27;
-
-        if (v != 27 && v != 28)
-            return 0;
-
-        _issuer = ecrecover(_hash, v, r, s);
-        return _issuer;
+        badgeVault.badges[badgeNameHash] = badge;
+        badgeVault.indexMap[badgeNameHash] = index;
+        BadgeCreated(badge.name, badge.issuer);
     }
 
     event CredentialIssued(
@@ -184,21 +147,20 @@ contract Issuer {
         uint _expires) 
     public authorized(msg.sender)
     {
-        require(BFT.payForIssueCredential(msg.sender));
-        bytes32 _txtKey = _getTxtKey(msg.data);
-        _setNewTxt(_txtKey, _recipient, _badgeName);
         uint expires;
         if (_expires <= 0) {
             expires = _expires;
         } else {
             expires = now + (_expires * 1 weeks);
         }
+        bytes32 _txtKey = VerifierLibrary.getCredentialTxKey(issuerContract, msg.data, nonce);
         _sendToRecipient(
             _badgeName, 
-            _expires, 
+            expires, 
             _recipient, 
             _txtKey
         );
+       _setNewTxt(_txtKey, _recipient, _badgeName, expires);
     }
     
     event CredentialRevoked(bytes32 _txKey);
@@ -250,64 +212,40 @@ contract Issuer {
     function isRevoked(bytes32 _key) public constant returns(bool c) {
         return revokationMap[_key];
     }
-
-    /// @notice get a badgeforce transaction key 
-    function _getTxtKey(bytes _data) constant public returns (bytes32 txtKey) {
-        return BadgeLibrary.credentialTxKey(issuerContract, _data, nonce);
-    }
     
-    /// @notice get integrity hash of some credential data 
-    function _getIntegrityHash(string[] _data) constant private returns (bytes32 _hash) {
-        return sha3(_data);
-    }
-
-    function _getIssueTransaction(bytes32 _key, bytes32 _integrityHash, address _recipient) constant private returns (IssueTransaction transaction) {
-        return IssueTransaction(_key, _integrityHash, _recipient);
-    }
-
     /// @notice set a new transaction (credential issued to recipient)
     /// @param _txtKey the transaction key 
     /// @param _recipient recipient of the credential 
     function _setNewTxt(
         bytes32 _txtKey, 
         address _recipient, 
-        string _badgeName) private
+        string _badgeName,
+        uint _expires) private
         {
         //increase nonce
         nonce++;
         bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_badgeName);
-        BadgeLibrary.BFBadge memory badge = badgeVault.badges[badgeNameHash];
-        bytes32 integrityHash = BadgeLibrary.getIntegrityHash(
+        BadgeLibrary.Badge memory badge = badgeVault.badges[badgeNameHash];
+        bytes32 integrityHash = VerifierLibrary.getIntegrityHash(
             badge.issuer, 
             badge.description, 
             badge.name, 
             badge.image, 
             badge.version, 
+            _expires,
             _recipient 
         );
-        IssueTransaction memory transaction = _getIssueTransaction(_txtKey, integrityHash, _recipient);
+        IssueTransaction memory transaction = IssueTransaction(_txtKey, integrityHash, _recipient);
         credentialTxtMap[_txtKey] = transaction;
     }
-
-    /// @notice check that a transaction key exists in the transaction map (verify credential issuer)
-    /// @param _txtKey the transaction key to check 
-    function _checkTransaction(bytes32 _txtKey, bytes32 _integrityHash, address _recipient) constant public returns(bool _revoked, bool _integrityHashCheck, bool _recipientCheck) {
-        
+    function getTransaction(bytes32 _txtKey) constant public returns(bytes32 txtKey, bytes32 integrityHash, address recipient) {
         IssueTransaction memory transaction = credentialTxtMap[_txtKey];
-        _revoked = false;
-        _integrityHashCheck = false;
-        _recipientCheck = false;
-        if (transaction.recipient == NONE) {
-            return(_revoked, _integrityHashCheck, _recipientCheck);
-        } 
-
-        _revoked = revokationMap[transaction.key];
-        _integrityHashCheck = (_integrityHash == transaction.integrityHash);
-        _recipientCheck = (_recipient == transaction.recipient);
-
-        return(_revoked, _integrityHashCheck, _recipientCheck);
-
-    }
+        return(
+            transaction.key,
+            transaction.integrityHash,
+            transaction.recipient
+        );
+    } 
 
     /// @notice internal method that gets instance of recipient contract and stores credential
     function _sendToRecipient(
@@ -317,16 +255,15 @@ contract Issuer {
         bytes32 _txtKey
     ) private
     {   
-        BadgeLibrary.BFBadge memory badge = badgeVault.badges[BadgeLibrary.getBadgeNameHash(_badgeName)];
+        BadgeLibrary.Badge memory badge = badgeVault.badges[BadgeLibrary.getBadgeNameHash(_badgeName)];
         require(badge.issuer != NONE);
-        Holder holder = Holder(_recipient);
+        HolderInterface holder = HolderInterface(_recipient);
         holder.storeCredential(
             badge.issuer,
             badge.description,
             badge.name,
             badge.image,
             badge.version,
-            badge.json, 
             expires,
             _recipient, 
             _txtKey
@@ -337,61 +274,21 @@ contract Issuer {
         );
     }
     
-    /// @notice internal method to call create badge method from library
-    function _createBadge(
-        address _issuer, 
-        string _description, 
-        string _name,
-        string _image,
-        string _version, 
-        string _json) private 
-        {
-        addBadge(
-            _issuer, 
-            _description, 
-            _name,
-            _image, 
-            _version,
-            _json
-        );
-    }
-
-    function addBadge(
-        address _issuer, 
-        string _description, 
-        string _name,
-        string _image,
-        string _version, 
-        string _json) private 
-    {   
-        bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
-        BadgeLibrary.BFBadge memory badge = BadgeLibrary.BFBadge(
-            _issuer, 
-            _description, 
-            _name,
-            _image, 
-            _version,
-            _json, 
-            badgeVault.badgeHashNames.push(badgeNameHash)-1
-        );
-        badgeVault.badges[badgeNameHash] = badge;
-        BadgeCreated(badge.name, badge.issuer);
-    }
-
     event BadgeDeleted(string _name, uint count);
     /// @notice delete a created badge 
     function deleteBadge(string _name) 
     authorized(msg.sender)
     public returns(bool success) 
     {
-        require(BFT.payForDeleteBadge(msg.sender));
         bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
-        uint rowToDelete = badgeVault.badges[badgeNameHash].index; 
+        uint rowToDelete = badgeVault.indexMap[badgeNameHash];
         bytes32 rowToMove = badgeVault.badgeHashNames[badgeVault.badgeHashNames.length-1];
-        badgeVault.badges[rowToMove].index = rowToDelete; 
+        badgeVault.indexMap[rowToMove] = rowToDelete; 
         badgeVault.badgeHashNames[rowToDelete] = rowToMove; 
         badgeVault.badgeHashNames.length--;
         delete badgeVault.badges[badgeNameHash];
+        delete badgeVault.indexMap[badgeNameHash];
+
         BadgeDeleted(_name, badgeVault.badgeHashNames.length);
         return true;
     }
@@ -404,16 +301,16 @@ contract Issuer {
     }
 
     /// @notice get a badge by it's index (should be used by frontend in a loop to get all the badges)
-    /// @param _index index of the badge to get inside the badge array
-    function getBadge(uint _index) constant badgeExists(_index) public returns(
-        address _issuer, 
-        string _description, 
-        string _name, 
-        string _image, 
-        string _version
+    /// @param _name name of the badge to get inside the badge map
+    function getBadge(string _name) constant badgeExists(_name) public returns(
+        address issuer, 
+        string description, 
+        string bName, 
+        string image, 
+        string version
     ) {
-        bytes32 badgeNameHash = badgeVault.badgeHashNames[_index];
-        BadgeLibrary.BFBadge memory badge = badgeVault.badges[badgeNameHash];
+        bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
+        BadgeLibrary.Badge memory badge = badgeVault.badges[badgeNameHash];
         return (
             badge.issuer, 
             badge.description,
@@ -422,6 +319,12 @@ contract Issuer {
             badge.version
         );
     } 
+
+    /// @notice helper function for UI to retrieve all names then retrieve the badges
+    /// @param _index index of the name you want
+    function getNameByIndex(uint _index) constant public returns(bytes32 _name) {
+        return badgeVault.badgeHashNames[_index];
+    }
 
     /// @notice get issuer info
     function getInfo() public constant returns(address _issuer, address _contract, string _name, string _url) {

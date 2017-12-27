@@ -1,17 +1,21 @@
 var Issuer = artifacts.require("./Issuer.sol");
 var Holder = artifacts.require("./Holder.sol");
 var BadgeForceToken = artifacts.require("BadgeForceToken.sol");
+var Verifier = artifacts.require("VerifierAbs.sol");
 const utils = require("./test-utils");
 
 contract('Issuer', function (accounts) {
 
   let token; 
   let issuer;
+  let verifier;
   //create new smart contract instances before each test method
   beforeEach(async function () {
     token = await BadgeForceToken.new();
+    verifier = await Verifier.new();
     utils.issuerInitialParams._issuer = accounts[0];
     utils.issuerInitialParams._token = token.address;
+    utils.issuerInitialParams._verifier = verifier.address;
     issuer = await Issuer.new(...Object.values(utils.issuerInitialParams));
   });
 
@@ -34,13 +38,17 @@ contract('Issuer', function (accounts) {
   });   
   it("should create badge and retrieve it", async function() {
     await issuer.createBadge(...Object.values(utils.createBadgeParams));
-    const data = await issuer.getBadge(0);
+    const data = await issuer.getBadge(utils.createBadgeParams._name);
     const badge = utils.getBadgeObj(data);
     assert.equal(badge._issuer, issuer.address);
     assert.equal(badge._description, utils.createBadgeParams._description);
     assert.equal(badge._name, utils.createBadgeParams._name);
     assert.equal(badge._image, utils.createBadgeParams._image);
     assert.equal(badge._version, utils.createBadgeParams._version);
+  });
+  it("should return true for unique badge name", async function() {
+    const unique = await issuer.isUnique(utils.createBadgeParams._name);
+    assert.equal(unique, true);
   });
   it("should delete badge", async function() {
     await issuer.createBadge(...Object.values(utils.createBadgeParams));
@@ -49,7 +57,7 @@ contract('Issuer', function (accounts) {
     assert.equal(numOfBadges, 0);
   });
   it("should issue badge to holder", async function() {
-    const holder = await Holder.new(accounts[0]);
+    const holder = await Holder.new(accounts[0], verifier.address);
     await holder.addTrustedIssuer(issuer.address);
     await issuer.createBadge(...Object.values(utils.createBadgeParams));
     //string _badgeName, address _recipient, uint _expires
@@ -59,17 +67,17 @@ contract('Issuer', function (accounts) {
       _expires: 0,
     }
     await issuer.issue(...Object.values(issueParams));
-    const data = await holder.getCredential(0);
+    const key = await holder.getTxtKey(0);
+    const data = await holder.getCredential(key);
     const credential = utils.getCredentialObj(data);
     assert.equal(credential._name, issueParams._badgeName);
     assert.equal(credential._recipient, issueParams._recipient);
-
     //bytes32 key; bytes32 integrityHash; address recipient;
-    const issueTransaction = await issuer.credentialTxtMap(credential._txKey);
+    const issueTransaction = await issuer.credentialTxtMap(credential._txKey);    
     assert.equal(issueTransaction[2], credential._recipient);
   }); 
   it("should revoke and unrevoke a credential", async function() {
-    const holder = await Holder.new(accounts[0]);
+    const holder = await Holder.new(accounts[0], verifier.address);
     await holder.addTrustedIssuer(issuer.address);
     await issuer.createBadge(...Object.values(utils.createBadgeParams));
     //string _badgeName, address _recipient, uint _expires
@@ -79,7 +87,8 @@ contract('Issuer', function (accounts) {
       _expires: 0,
     }
     await issuer.issue(...Object.values(issueParams));
-    const data = await holder.getCredential(0);
+    const key = await holder.getTxtKey(0);
+    const data = await holder.getCredential(key);
     const credential = utils.getCredentialObj(data);
     await issuer.revoke(credential._txKey);
     let revoked = await issuer.revokationMap(credential._txKey);
