@@ -1,10 +1,9 @@
 //initial params for testing address _issuer, string _name, string _url, address _token
 const issuerInitialParams = {
-  _issuer: 0x0,
+  _adminWalletAddr: 0x0,
   _name: "BadgeForce",
   _url: "https://github.com/BadgeForce",
-  _token: 0x0,
-  _verifier:0x0
+  _token: 0x0
 };
 
 //string _description, string _name,string _image,string _version, string _json

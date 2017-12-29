@@ -1,15 +1,11 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.17;
 
 import "BadgeLibrary/contracts/BadgeLibrary.sol";
-import "BadgeLibrary/contracts/VerifierInterface.sol";
-import "BadgeLibrary/contracts/VerifierLibrary.sol";
 
 contract Holder {
     
     /// @notice address where holder holds there badgeforce tokens
     address public holder;
-
-    VerifierInterface verifier;
 
     /// @notice mapping of name hash to credential
     /// @notice array of hash names
@@ -25,9 +21,8 @@ contract Holder {
     /// @notice mapping of trusted issuers 
     mapping (address=>bool) public trustedIssuers;
 
-    function Holder(address _holder, address _verifier) {
+    function Holder(address _holder) {
         holder = _holder;
-        verifier = VerifierInterface(_verifier);
     }
 
     event AuthorizeAttempt(address _actor, bool authorized);
@@ -57,7 +52,7 @@ contract Holder {
         trustedIssuers[_issuer] = false;
     }
 
-    event LogNewCredential(address _issuer, bytes32 _txKey);
+    event LogNewCredential(address _issuer, bytes32 _txnKey);
     /// @notice store a new credential on this contract 
     function storeCredential(
         address _issuer,
@@ -67,48 +62,40 @@ contract Holder {
         string _version,
         uint _expires,
         address _recipient,
-        bytes32 _txKey
+        bytes32 _txnKey
     ) public trusted(msg.sender)
     {
-        BadgeLibrary.Badge memory badgeData = BadgeLibrary.Badge(
-            _issuer,
-            _description,
-            _name,
-            _image,
-            _version
-        );
-        BadgeLibrary.Credential memory credential = BadgeLibrary.Credential(
-                badgeData,
+        credentialVault.credentials[_txnKey] = BadgeLibrary.Credential(
+                BadgeLibrary.Badge(_issuer, _description, _name, _image, _version),
                 _expires,
                 _recipient,
-                _txKey
+                _txnKey
         );
-        credentialVault.credentials[_txKey] = credential;
-        credentialVault.indexMap[_txKey] = credentialVault.keys.push(_txKey)-1;
-        LogNewCredential(_issuer, _txKey);
+        credentialVault.indexMap[_txnKey] = credentialVault.keys.push(_txnKey)-1;
+        LogNewCredential(_issuer, _txnKey);
     }
 
-    event CredentialDeleted(bytes32 _txKey, uint count);
+    event CredentialDeleted(bytes32 _txnKey, uint count);
     /// @notice delete a credential 
-    function deleteCredential(bytes32 _txKey) 
+    function deleteCredential(bytes32 _txnKey) 
     authorized(msg.sender)
     public returns(bool success) 
     {
-        delete credentialVault.credentials[_txKey];
-        uint rowToDelete = credentialVault.indexMap[_txKey]; 
+        delete credentialVault.credentials[_txnKey];
+        uint rowToDelete = credentialVault.indexMap[_txnKey]; 
         bytes32 rowToMove = credentialVault.keys[credentialVault.keys.length-1];
         credentialVault.indexMap[rowToMove] = rowToDelete; 
         credentialVault.keys[rowToDelete] = rowToMove; 
         credentialVault.keys.length--;
-        delete credentialVault.indexMap[_txKey];
-        delete credentialVault.credentials[_txKey];
-        CredentialDeleted(_txKey, credentialVault.keys.length);
+        delete credentialVault.indexMap[_txnKey];
+        delete credentialVault.credentials[_txnKey];
+        CredentialDeleted(_txnKey, credentialVault.keys.length);
         return true;
     }
 
     /// @notice get a holders credential 
     /// @param _name index of credential to return 
-    function getCredential(bytes32 _txtKey) constant public  returns (
+    function getCredential(bytes32 _txnKey) constant public  returns (
         address _issuer,
         string _description,
         string _name,
@@ -116,10 +103,10 @@ contract Holder {
         string _version,
         uint _expires,
         address _recipient,
-        bytes32 _txKey
+        bytes32 txnKey
     ) {
         require(credentialVault.keys.length > 0);
-        BadgeLibrary.Credential memory cred = credentialVault.credentials[_txtKey];
+        BadgeLibrary.Credential memory cred = credentialVault.credentials[_txnKey];
         return (
             cred.badge.issuer,
             cred.badge.description,
@@ -128,13 +115,13 @@ contract Holder {
             cred.badge.version,
             cred.expires,
             cred.recipient,
-            cred.txKey
+            cred.txnKey
         );
     }
 
     /// @notice helper function for UI to retrieve all names then retrieve the credentials
     /// @param _index index of the name you want
-    function getTxtKey(uint _index) constant public returns(bytes32 name) {
+    function getTxnKey(uint _index) constant public returns(bytes32 name) {
         return credentialVault.keys[_index];
     }
 
@@ -143,19 +130,15 @@ contract Holder {
         return credentialVault.keys.length;
     }
 
-    function verifyCredential(bytes32 _txtKey) constant public returns(bytes32 b) {
-        //bytes32 _txtKey, bytes32 _integrityHash, address _recipient, address _issuer
-        BadgeLibrary.Credential memory credential = credentialVault.credentials[_txtKey];
-        bytes32 integrityHash = VerifierLibrary.getIntegrityHash(
+    function recomputePOIHash(bytes32 _txnKey) constant public returns(bytes32 poiHash) {
+        BadgeLibrary.Credential memory credential = credentialVault.credentials[_txnKey];
+        return BadgeLibrary.getIntegrityHash(
             credential.badge.issuer, 
             credential.badge.description, 
             credential.badge.name, 
             credential.badge.image, 
             credential.badge.version, 
-            credential.expires,
-            credential.recipient 
+            credential.recipient
         );
-        return integrityHash;
-        // return verifier.verifyCredential(credential.txKey, integrityHash, credential.recipient, credential.badge.issuer);
     }
 }
