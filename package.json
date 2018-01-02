@@ -10,7 +10,8 @@
     "BadgeForceToken": "BadgeForce/BadgeForceToken.git",
     "BadgeLibrary": "git+https://github.com/BadgeForce/BadgeLibrary.git#extend-data",
     "babel-register": "^6.26.0",
-    "truffle": "^4.0.1"
+    "truffle": "^4.0.1",
+    "ganache-cli": "^6.0.3"
   },
   "scripts": {
     "test": "rm -rf ./build && node_modules/truffle/build/cli.bundled.js compile && node_modules/truffle/build/cli.bundled.js test"
