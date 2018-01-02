@@ -12,10 +12,11 @@ contract Holder {
     struct CredentialVault {
         mapping (bytes32=>BadgeLibrary.Credential) credentials;
         mapping (bytes32=>uint) indexMap;
+        uint numOfPendingCreds;
         bytes32[] keys;
     }
 
-    /// @notice valut holding credentials
+    /// @notice vault holding credentials
     CredentialVault credentialVault;
 
     /// @notice mapping of trusted issuers 
@@ -52,8 +53,10 @@ contract Holder {
         trustedIssuers[_issuer] = false;
     }
 
-    event LogNewCredential(address _issuer, bytes32 _txnKey);
-    /// @notice store a new credential on this contract 
+    event NewPendingCredential(string _name, address _issuer);
+    /**
+     *  @dev put a new credential inside the pending queue
+     */
     function storeCredential(
         address _issuer,
         string _description,
@@ -69,18 +72,39 @@ contract Holder {
                 BadgeLibrary.Badge(_issuer, _description, _name, _image, _version),
                 _expires,
                 _recipient,
-                _txnKey
+                _txnKey,
+                false
         );
         credentialVault.indexMap[_txnKey] = credentialVault.keys.push(_txnKey)-1;
-        LogNewCredential(_issuer, _txnKey);
+        credentialVault.numOfPendingCreds++;
+        NewPendingCredential(_name, _issuer);
+    }
+
+    event NewCredentialAccepted(bytes32 _txnKey);
+    function acceptCredential(bytes32 _txnKey) authorized(msg.sender) public {
+        require(!credentialVault.credentials[_txnKey].active);
+        credentialVault.credentials[_txnKey].active = true;
+        credentialVault.numOfPendingCreds--;
+        NewCredentialAccepted(_txnKey);
+    }
+
+    event CredentialRejected(bytes32 _txnKey);
+    function rejectCredential(bytes32 _txnKey) authorized(msg.sender) public {
+        require(!credentialVault.credentials[_txnKey].active);
+        _deleteCredential(_txnKey);
+        credentialVault.numOfPendingCreds--;
+        CredentialRejected(_txnKey);
     }
 
     event CredentialDeleted(bytes32 _txnKey, uint count);
     /// @notice delete a credential 
-    function deleteCredential(bytes32 _txnKey) 
-    authorized(msg.sender)
-    public returns(bool success) 
-    {
+    function deleteCredential(bytes32 _txnKey) authorized(msg.sender) public returns(bool success) {
+        success = _deleteCredential(_txnKey);
+        CredentialDeleted(_txnKey, credentialVault.keys.length);
+        return success;
+    }
+
+    function _deleteCredential(bytes32 _txnKey) public returns(bool success) {
         delete credentialVault.credentials[_txnKey];
         uint rowToDelete = credentialVault.indexMap[_txnKey]; 
         bytes32 rowToMove = credentialVault.keys[credentialVault.keys.length-1];
@@ -89,7 +113,6 @@ contract Holder {
         credentialVault.keys.length--;
         delete credentialVault.indexMap[_txnKey];
         delete credentialVault.credentials[_txnKey];
-        CredentialDeleted(_txnKey, credentialVault.keys.length);
         return true;
     }
 
@@ -103,7 +126,8 @@ contract Holder {
         string _version,
         uint _expires,
         address _recipient,
-        bytes32 txnKey
+        bytes32 txnKey,
+        bool _active
     ) {
         require(credentialVault.keys.length > 0);
         BadgeLibrary.Credential memory cred = credentialVault.credentials[_txnKey];
@@ -115,7 +139,8 @@ contract Holder {
             cred.badge.version,
             cred.expires,
             cred.recipient,
-            cred.txnKey
+            cred.txnKey,
+            cred.active
         );
     }
 
@@ -125,9 +150,14 @@ contract Holder {
         return credentialVault.keys[_index];
     }
 
-    /// @notice get number of credentials 
+    /// @dev get number of credentials 
     function getNumberOfCredentials() constant public returns(uint count) {
         return credentialVault.keys.length;
+    }
+
+    /// @dev get number of pending credentials 
+    function getNumberOfPendingCredentials() constant public returns(uint count) {
+        return credentialVault.numOfPendingCreds;
     }
 
     function recomputePOIHash(bytes32 _txnKey) constant public returns(bytes32 poiHash) {

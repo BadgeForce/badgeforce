@@ -17,7 +17,7 @@ const createBadgeParams = {
 const getCredentialObj = (data) => {
     let credential = {};
     ({0:credential._issuer, 1:credential._description, 2:credential._name, 3:credential._image, 
-        4:credential._version, 5:credential._expires, 6:credential._recipient, 7: credential._txKey} = data);
+        4:credential._version, 5:credential._expires, 6:credential._recipient, 7: credential._txKey, 8:credential._active} = data);
     return credential;
 }
 
@@ -48,11 +48,23 @@ const issueCredential = async (issuer, holder) => {
     await issuer.issue(...Object.values(issueParams));
 }
 
+const issueCredentialManual = async (issuer, holder, badge) => {
+    await issuer.createBadge(...Object.values(badge));
+    await holder.addTrustedIssuer(issuer.address);
+    const issueParams = {
+        _badgeName: badge._name,
+        _recipient: holder.address,
+        _expires: 0,
+    }
+    await issuer.issue(...Object.values(issueParams));
+}
+
 module.exports = {
     issuerInitialParams, 
     createBadgeParams,
     getCredentialObj,
     getBadgeObj,
     getTxn,
-    issueCredential
+    issueCredential,
+    issueCredentialManual
 }
