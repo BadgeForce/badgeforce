@@ -94,7 +94,7 @@
       "absolutePath": "BadgeLibrary/contracts/BadgeLibrary.sol",
       "exportedSymbols": {
         "BadgeLibrary": [
-          2167
+          2165
         ]
       }
     },
@@ -108,7 +108,7 @@
             ".15"
           ]
         },
-        "id": 2092,
+        "id": 2090,
         "name": "PragmaDirective",
         "src": "0:24:11"
       },
@@ -124,17 +124,17 @@
           "documentation": null,
           "fullyImplemented": true,
           "linearizedBaseContracts": [
-            2167
+            2165
           ],
           "name": "BadgeLibrary",
-          "scope": 2168
+          "scope": 2166
         },
         "children": [
           {
             "attributes": {
               "canonicalName": "BadgeLibrary.Badge",
               "name": "Badge",
-              "scope": 2167,
+              "scope": 2165,
               "visibility": "public"
             },
             "children": [
@@ -142,7 +142,7 @@
                 "attributes": {
                   "constant": false,
                   "name": "issuer",
-                  "scope": 2103,
+                  "scope": 2101,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "address",
@@ -155,12 +155,12 @@
                       "name": "address",
                       "type": "address"
                     },
-                    "id": 2093,
+                    "id": 2091,
                     "name": "ElementaryTypeName",
                     "src": "142:7:11"
                   }
                 ],
-                "id": 2094,
+                "id": 2092,
                 "name": "VariableDeclaration",
                 "src": "142:14:11"
               },
@@ -168,7 +168,33 @@
                 "attributes": {
                   "constant": false,
                   "name": "description",
-                  "scope": 2103,
+                  "scope": 2101,
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "type": "string storage pointer",
+                  "value": null,
+                  "visibility": "internal"
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "name": "string",
+                      "type": "string storage pointer"
+                    },
+                    "id": 2093,
+                    "name": "ElementaryTypeName",
+                    "src": "166:6:11"
+                  }
+                ],
+                "id": 2094,
+                "name": "VariableDeclaration",
+                "src": "166:18:11"
+              },
+              {
+                "attributes": {
+                  "constant": false,
+                  "name": "name",
+                  "scope": 2101,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "string storage pointer",
@@ -183,18 +209,18 @@
                     },
                     "id": 2095,
                     "name": "ElementaryTypeName",
-                    "src": "166:6:11"
+                    "src": "194:6:11"
                   }
                 ],
                 "id": 2096,
                 "name": "VariableDeclaration",
-                "src": "166:18:11"
+                "src": "194:11:11"
               },
               {
                 "attributes": {
                   "constant": false,
-                  "name": "name",
-                  "scope": 2103,
+                  "name": "image",
+                  "scope": 2101,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "string storage pointer",
@@ -209,18 +235,18 @@
                     },
                     "id": 2097,
                     "name": "ElementaryTypeName",
-                    "src": "194:6:11"
+                    "src": "215:6:11"
                   }
                 ],
                 "id": 2098,
                 "name": "VariableDeclaration",
-                "src": "194:11:11"
+                "src": "215:12:11"
               },
               {
                 "attributes": {
                   "constant": false,
-                  "name": "image",
-                  "scope": 2103,
+                  "name": "version",
+                  "scope": 2101,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "string storage pointer",
@@ -235,41 +261,15 @@
                     },
                     "id": 2099,
                     "name": "ElementaryTypeName",
-                    "src": "215:6:11"
+                    "src": "237:6:11"
                   }
                 ],
                 "id": 2100,
                 "name": "VariableDeclaration",
-                "src": "215:12:11"
-              },
-              {
-                "attributes": {
-                  "constant": false,
-                  "name": "version",
-                  "scope": 2103,
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "type": "string storage pointer",
-                  "value": null,
-                  "visibility": "internal"
-                },
-                "children": [
-                  {
-                    "attributes": {
-                      "name": "string",
-                      "type": "string storage pointer"
-                    },
-                    "id": 2101,
-                    "name": "ElementaryTypeName",
-                    "src": "237:6:11"
-                  }
-                ],
-                "id": 2102,
-                "name": "VariableDeclaration",
                 "src": "237:14:11"
               }
             ],
-            "id": 2103,
+            "id": 2101,
             "name": "StructDefinition",
             "src": "119:199:11"
           },
@@ -277,7 +277,7 @@
             "attributes": {
               "canonicalName": "BadgeLibrary.Credential",
               "name": "Credential",
-              "scope": 2167,
+              "scope": 2165,
               "visibility": "public"
             },
             "children": [
@@ -285,7 +285,7 @@
                 "attributes": {
                   "constant": false,
                   "name": "badge",
-                  "scope": 2112,
+                  "scope": 2110,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "struct BadgeLibrary.Badge storage pointer",
@@ -297,15 +297,15 @@
                     "attributes": {
                       "contractScope": null,
                       "name": "Badge",
-                      "referencedDeclaration": 2103,
+                      "referencedDeclaration": 2101,
                       "type": "struct BadgeLibrary.Badge storage pointer"
                     },
-                    "id": 2104,
+                    "id": 2102,
                     "name": "UserDefinedTypeName",
                     "src": "411:5:11"
                   }
                 ],
-                "id": 2105,
+                "id": 2103,
                 "name": "VariableDeclaration",
                 "src": "411:11:11"
               },
@@ -313,7 +313,7 @@
                 "attributes": {
                   "constant": false,
                   "name": "expires",
-                  "scope": 2112,
+                  "scope": 2110,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "uint256",
@@ -326,12 +326,12 @@
                       "name": "uint",
                       "type": "uint256"
                     },
-                    "id": 2106,
+                    "id": 2104,
                     "name": "ElementaryTypeName",
                     "src": "432:4:11"
                   }
                 ],
-                "id": 2107,
+                "id": 2105,
                 "name": "VariableDeclaration",
                 "src": "432:12:11"
               },
@@ -339,7 +339,7 @@
                 "attributes": {
                   "constant": false,
                   "name": "recipient",
-                  "scope": 2112,
+                  "scope": 2110,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "address",
@@ -352,12 +352,12 @@
                       "name": "address",
                       "type": "address"
                     },
-                    "id": 2108,
+                    "id": 2106,
                     "name": "ElementaryTypeName",
                     "src": "454:7:11"
                   }
                 ],
-                "id": 2109,
+                "id": 2107,
                 "name": "VariableDeclaration",
                 "src": "454:17:11"
               },
@@ -365,7 +365,7 @@
                 "attributes": {
                   "constant": false,
                   "name": "txnKey",
-                  "scope": 2112,
+                  "scope": 2110,
                   "stateVariable": false,
                   "storageLocation": "default",
                   "type": "bytes32",
@@ -378,17 +378,17 @@
                       "name": "bytes32",
                       "type": "bytes32"
                     },
-                    "id": 2110,
+                    "id": 2108,
                     "name": "ElementaryTypeName",
                     "src": "481:7:11"
                   }
                 ],
-                "id": 2111,
+                "id": 2109,
                 "name": "VariableDeclaration",
                 "src": "481:14:11"
               }
             ],
-            "id": 2112,
+            "id": 2110,
             "name": "StructDefinition",
             "src": "383:119:11"
           },
@@ -402,7 +402,7 @@
               ],
               "name": "getBadgeNameHash",
               "payable": false,
-              "scope": 2167,
+              "scope": 2165,
               "stateMutability": "view",
               "superFunction": null,
               "visibility": "public"
@@ -414,7 +414,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "_badgename",
-                      "scope": 2124,
+                      "scope": 2122,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "string memory",
@@ -427,17 +427,17 @@
                           "name": "string",
                           "type": "string storage pointer"
                         },
-                        "id": 2113,
+                        "id": 2111,
                         "name": "ElementaryTypeName",
                         "src": "581:6:11"
                       }
                     ],
-                    "id": 2114,
+                    "id": 2112,
                     "name": "VariableDeclaration",
                     "src": "581:17:11"
                   }
                 ],
-                "id": 2115,
+                "id": 2113,
                 "name": "ParameterList",
                 "src": "580:19:11"
               },
@@ -447,7 +447,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "_hash",
-                      "scope": 2124,
+                      "scope": 2122,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bytes32",
@@ -460,17 +460,17 @@
                           "name": "bytes32",
                           "type": "bytes32"
                         },
-                        "id": 2116,
+                        "id": 2114,
                         "name": "ElementaryTypeName",
                         "src": "625:7:11"
                       }
                     ],
-                    "id": 2117,
+                    "id": 2115,
                     "name": "VariableDeclaration",
                     "src": "625:13:11"
                   }
                 ],
-                "id": 2118,
+                "id": 2116,
                 "name": "ParameterList",
                 "src": "624:15:11"
               },
@@ -478,7 +478,7 @@
                 "children": [
                   {
                     "attributes": {
-                      "functionReturnParameters": 2118
+                      "functionReturnParameters": 2116
                     },
                     "children": [
                       {
@@ -507,11 +507,11 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 2173,
+                              "referencedDeclaration": 2171,
                               "type": "function () pure returns (bytes32)",
                               "value": "keccak256"
                             },
-                            "id": 2119,
+                            "id": 2117,
                             "name": "Identifier",
                             "src": "657:9:11"
                           },
@@ -521,31 +521,31 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 2114,
+                              "referencedDeclaration": 2112,
                               "type": "string memory",
                               "value": "_badgename"
                             },
-                            "id": 2120,
+                            "id": 2118,
                             "name": "Identifier",
                             "src": "667:10:11"
                           }
                         ],
-                        "id": 2121,
+                        "id": 2119,
                         "name": "FunctionCall",
                         "src": "657:21:11"
                       }
                     ],
-                    "id": 2122,
+                    "id": 2120,
                     "name": "Return",
                     "src": "650:28:11"
                   }
                 ],
-                "id": 2123,
+                "id": 2121,
                 "name": "Block",
                 "src": "640:45:11"
               }
             ],
-            "id": 2124,
+            "id": 2122,
             "name": "FunctionDefinition",
             "src": "555:130:11"
           },
@@ -559,7 +559,7 @@
               ],
               "name": "getBadgeLinkHash",
               "payable": false,
-              "scope": 2167,
+              "scope": 2165,
               "stateMutability": "view",
               "superFunction": null,
               "visibility": "public"
@@ -571,7 +571,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "_name",
-                      "scope": 2139,
+                      "scope": 2137,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "string memory",
@@ -584,12 +584,12 @@
                           "name": "string",
                           "type": "string storage pointer"
                         },
-                        "id": 2125,
+                        "id": 2123,
                         "name": "ElementaryTypeName",
                         "src": "764:6:11"
                       }
                     ],
-                    "id": 2126,
+                    "id": 2124,
                     "name": "VariableDeclaration",
                     "src": "764:12:11"
                   },
@@ -597,7 +597,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "_issuer",
-                      "scope": 2139,
+                      "scope": 2137,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -610,17 +610,17 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 2127,
+                        "id": 2125,
                         "name": "ElementaryTypeName",
                         "src": "778:7:11"
                       }
                     ],
-                    "id": 2128,
+                    "id": 2126,
                     "name": "VariableDeclaration",
                     "src": "778:15:11"
                   }
                 ],
-                "id": 2129,
+                "id": 2127,
                 "name": "ParameterList",
                 "src": "763:31:11"
               },
@@ -630,7 +630,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "hash",
-                      "scope": 2139,
+                      "scope": 2137,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bytes32",
@@ -643,17 +643,17 @@
                           "name": "bytes32",
                           "type": "bytes32"
                         },
-                        "id": 2130,
+                        "id": 2128,
                         "name": "ElementaryTypeName",
                         "src": "820:7:11"
                       }
                     ],
-                    "id": 2131,
+                    "id": 2129,
                     "name": "VariableDeclaration",
                     "src": "820:12:11"
                   }
                 ],
-                "id": 2132,
+                "id": 2130,
                 "name": "ParameterList",
                 "src": "819:14:11"
               },
@@ -661,7 +661,7 @@
                 "children": [
                   {
                     "attributes": {
-                      "functionReturnParameters": 2132
+                      "functionReturnParameters": 2130
                     },
                     "children": [
                       {
@@ -694,11 +694,11 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 2173,
+                              "referencedDeclaration": 2171,
                               "type": "function () pure returns (bytes32)",
                               "value": "keccak256"
                             },
-                            "id": 2133,
+                            "id": 2131,
                             "name": "Identifier",
                             "src": "851:9:11"
                           },
@@ -708,11 +708,11 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 2126,
+                              "referencedDeclaration": 2124,
                               "type": "string memory",
                               "value": "_name"
                             },
-                            "id": 2134,
+                            "id": 2132,
                             "name": "Identifier",
                             "src": "861:5:11"
                           },
@@ -722,31 +722,31 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 2128,
+                              "referencedDeclaration": 2126,
                               "type": "address",
                               "value": "_issuer"
                             },
-                            "id": 2135,
+                            "id": 2133,
                             "name": "Identifier",
                             "src": "868:7:11"
                           }
                         ],
-                        "id": 2136,
+                        "id": 2134,
                         "name": "FunctionCall",
                         "src": "851:25:11"
                       }
                     ],
-                    "id": 2137,
+                    "id": 2135,
                     "name": "Return",
                     "src": "844:32:11"
                   }
                 ],
-                "id": 2138,
+                "id": 2136,
                 "name": "Block",
                 "src": "834:49:11"
               }
             ],
-            "id": 2139,
+            "id": 2137,
             "name": "FunctionDefinition",
             "src": "738:145:11"
           },
@@ -760,7 +760,7 @@
               ],
               "name": "getIntegrityHash",
               "payable": false,
-              "scope": 2167,
+              "scope": 2165,
               "stateMutability": "view",
               "superFunction": null,
               "visibility": "public"
@@ -772,7 +772,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "issuer",
-                      "scope": 2166,
+                      "scope": 2164,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -785,12 +785,12 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 2140,
+                        "id": 2138,
                         "name": "ElementaryTypeName",
                         "src": "982:7:11"
                       }
                     ],
-                    "id": 2141,
+                    "id": 2139,
                     "name": "VariableDeclaration",
                     "src": "982:14:11"
                   },
@@ -798,7 +798,33 @@
                     "attributes": {
                       "constant": false,
                       "name": "description",
-                      "scope": 2166,
+                      "scope": 2164,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "string memory",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "string",
+                          "type": "string storage pointer"
+                        },
+                        "id": 2140,
+                        "name": "ElementaryTypeName",
+                        "src": "1007:6:11"
+                      }
+                    ],
+                    "id": 2141,
+                    "name": "VariableDeclaration",
+                    "src": "1007:18:11"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "name",
+                      "scope": 2164,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "string memory",
@@ -813,18 +839,18 @@
                         },
                         "id": 2142,
                         "name": "ElementaryTypeName",
-                        "src": "1007:6:11"
+                        "src": "1036:6:11"
                       }
                     ],
                     "id": 2143,
                     "name": "VariableDeclaration",
-                    "src": "1007:18:11"
+                    "src": "1036:11:11"
                   },
                   {
                     "attributes": {
                       "constant": false,
-                      "name": "name",
-                      "scope": 2166,
+                      "name": "image",
+                      "scope": 2164,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "string memory",
@@ -839,18 +865,18 @@
                         },
                         "id": 2144,
                         "name": "ElementaryTypeName",
-                        "src": "1036:6:11"
+                        "src": "1058:6:11"
                       }
                     ],
                     "id": 2145,
                     "name": "VariableDeclaration",
-                    "src": "1036:11:11"
+                    "src": "1058:12:11"
                   },
                   {
                     "attributes": {
                       "constant": false,
-                      "name": "image",
-                      "scope": 2166,
+                      "name": "version",
+                      "scope": 2164,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "string memory",
@@ -865,36 +891,10 @@
                         },
                         "id": 2146,
                         "name": "ElementaryTypeName",
-                        "src": "1058:6:11"
-                      }
-                    ],
-                    "id": 2147,
-                    "name": "VariableDeclaration",
-                    "src": "1058:12:11"
-                  },
-                  {
-                    "attributes": {
-                      "constant": false,
-                      "name": "version",
-                      "scope": 2166,
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "type": "string memory",
-                      "value": null,
-                      "visibility": "internal"
-                    },
-                    "children": [
-                      {
-                        "attributes": {
-                          "name": "string",
-                          "type": "string storage pointer"
-                        },
-                        "id": 2148,
-                        "name": "ElementaryTypeName",
                         "src": "1081:6:11"
                       }
                     ],
-                    "id": 2149,
+                    "id": 2147,
                     "name": "VariableDeclaration",
                     "src": "1081:14:11"
                   },
@@ -902,7 +902,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "recipient",
-                      "scope": 2166,
+                      "scope": 2164,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -915,17 +915,17 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 2150,
+                        "id": 2148,
                         "name": "ElementaryTypeName",
                         "src": "1105:7:11"
                       }
                     ],
-                    "id": 2151,
+                    "id": 2149,
                     "name": "VariableDeclaration",
                     "src": "1105:17:11"
                   }
                 ],
-                "id": 2152,
+                "id": 2150,
                 "name": "ParameterList",
                 "src": "972:156:11"
               },
@@ -935,7 +935,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "_hash",
-                      "scope": 2166,
+                      "scope": 2164,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "bytes32",
@@ -948,17 +948,17 @@
                           "name": "bytes32",
                           "type": "bytes32"
                         },
-                        "id": 2153,
+                        "id": 2151,
                         "name": "ElementaryTypeName",
                         "src": "1153:7:11"
                       }
                     ],
-                    "id": 2154,
+                    "id": 2152,
                     "name": "VariableDeclaration",
                     "src": "1153:13:11"
                   }
                 ],
-                "id": 2155,
+                "id": 2153,
                 "name": "ParameterList",
                 "src": "1152:15:11"
               },
@@ -966,7 +966,7 @@
                 "children": [
                   {
                     "attributes": {
-                      "functionReturnParameters": 2155
+                      "functionReturnParameters": 2153
                     },
                     "children": [
                       {
@@ -1015,11 +1015,11 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 2173,
+                              "referencedDeclaration": 2171,
                               "type": "function () pure returns (bytes32)",
                               "value": "keccak256"
                             },
-                            "id": 2156,
+                            "id": 2154,
                             "name": "Identifier",
                             "src": "1190:9:11"
                           },
@@ -1029,11 +1029,11 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 2141,
+                              "referencedDeclaration": 2139,
                               "type": "address",
                               "value": "issuer"
                             },
-                            "id": 2157,
+                            "id": 2155,
                             "name": "Identifier",
                             "src": "1217:6:11"
                           },
@@ -1043,11 +1043,11 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 2143,
+                              "referencedDeclaration": 2141,
                               "type": "string memory",
                               "value": "description"
                             },
-                            "id": 2158,
+                            "id": 2156,
                             "name": "Identifier",
                             "src": "1242:11:11"
                           },
@@ -1057,11 +1057,11 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 2145,
+                              "referencedDeclaration": 2143,
                               "type": "string memory",
                               "value": "name"
                             },
-                            "id": 2159,
+                            "id": 2157,
                             "name": "Identifier",
                             "src": "1272:4:11"
                           },
@@ -1071,11 +1071,11 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 2147,
+                              "referencedDeclaration": 2145,
                               "type": "string memory",
                               "value": "image"
                             },
-                            "id": 2160,
+                            "id": 2158,
                             "name": "Identifier",
                             "src": "1295:5:11"
                           },
@@ -1085,11 +1085,11 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 2149,
+                              "referencedDeclaration": 2147,
                               "type": "string memory",
                               "value": "version"
                             },
-                            "id": 2161,
+                            "id": 2159,
                             "name": "Identifier",
                             "src": "1319:7:11"
                           },
@@ -1099,41 +1099,41 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 2151,
+                              "referencedDeclaration": 2149,
                               "type": "address",
                               "value": "recipient"
                             },
-                            "id": 2162,
+                            "id": 2160,
                             "name": "Identifier",
                             "src": "1345:9:11"
                           }
                         ],
-                        "id": 2163,
+                        "id": 2161,
                         "name": "FunctionCall",
                         "src": "1190:174:11"
                       }
                     ],
-                    "id": 2164,
+                    "id": 2162,
                     "name": "Return",
                     "src": "1183:181:11"
                   }
                 ],
-                "id": 2165,
+                "id": 2163,
                 "name": "Block",
                 "src": "1173:198:11"
               }
             ],
-            "id": 2166,
+            "id": 2164,
             "name": "FunctionDefinition",
             "src": "947:424:11"
           }
         ],
-        "id": 2167,
+        "id": 2165,
         "name": "ContractDefinition",
         "src": "26:1347:11"
       }
     ],
-    "id": 2168,
+    "id": 2166,
     "name": "SourceUnit",
     "src": "0:1373:11"
   },
@@ -1143,5 +1143,5 @@
   },
   "networks": {},
   "schemaVersion": "1.0.1",
-  "updatedAt": "2017-12-29T12:58:31.826Z"
+  "updatedAt": "2018-01-02T09:04:20.809Z"
 }

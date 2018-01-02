@@ -15,6 +15,7 @@ contract TransactionManager is BadgeManager {
 
     /// @notice mapping of a unique hash to a recipient address, used to verify issuer of a credential 
     mapping (bytes32=>Transaction) public credentialTxnMap;
+
     uint public nonce;
 
     function TransactionManager(address _adminWalletAddr) public BadgeManager(_adminWalletAddr) {
@@ -42,8 +43,7 @@ contract TransactionManager is BadgeManager {
             badge.version, 
             _recipient 
         );
-        Transaction memory transaction = Transaction(_txnKey, integrityHash, _recipient, false);
-        credentialTxnMap[_txnKey] = transaction;
+        credentialTxnMap[_txnKey] = Transaction(_txnKey, integrityHash, _recipient, false);
     }
 
     /** @dev gets a transaction
@@ -53,12 +53,11 @@ contract TransactionManager is BadgeManager {
       * @return recipient address of the wallet associated with the person who received this badge
     */ 
     function getTxn(bytes32 _txnKey) constant public returns(bytes32 txnKey, bytes32 integrityHash, address recipient, bool revoked) {
-        Transaction memory transaction = credentialTxnMap[_txnKey];
         return(
-            transaction.key,
-            transaction.integrityHash,
-            transaction.recipient,
-            transaction.revoked
+            credentialTxnMap[_txnKey].key,
+            credentialTxnMap[_txnKey].integrityHash,
+            credentialTxnMap[_txnKey].recipient,
+            credentialTxnMap[_txnKey].revoked
         );
     }
 

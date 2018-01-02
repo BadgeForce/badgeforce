@@ -46,14 +46,14 @@ contract Issuer is Verifier {
         } else {
             expires = now + (_expires * 1 weeks);
         }
-        bytes32 _txtKey = getCredentialTxnKey(issuerContract, msg.data);
+        bytes32 _txnKey = getCredentialTxnKey(issuerContract, msg.data);
         _sendToRecipient(
             _badgeName, 
             expires, 
             _recipient,
-            _txtKey
+            _txnKey
         );
-       setNewTxn(_txtKey, _recipient, _badgeName);
+       setNewTxn(_txnKey, _recipient, _badgeName);
     }
     
     /// @notice internal method that gets instance of recipient contract and stores credential
@@ -61,7 +61,7 @@ contract Issuer is Verifier {
         string _badgeName, 
         uint expires, 
         address _recipient, 
-        bytes32 _txtKey
+        bytes32 _txnKey
     ) private
     {   
         BadgeLibrary.Badge memory badge = badgeVault.badges[BadgeLibrary.getBadgeNameHash(_badgeName)];
@@ -75,7 +75,7 @@ contract Issuer is Verifier {
             badge.version,
             expires,
             _recipient, 
-            _txtKey
+            _txnKey
         );
         CredentialIssued(
             badge.name,

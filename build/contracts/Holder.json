@@ -328,7 +328,7 @@
       },
       {
         "attributes": {
-          "SourceUnit": 2168,
+          "SourceUnit": 2166,
           "absolutePath": "BadgeLibrary/contracts/BadgeLibrary.sol",
           "file": "BadgeLibrary/contracts/BadgeLibrary.sol",
           "scope": 912,
@@ -423,7 +423,7 @@
                         "attributes": {
                           "contractScope": null,
                           "name": "BadgeLibrary.Credential",
-                          "referencedDeclaration": 2112,
+                          "referencedDeclaration": 2110,
                           "type": "struct BadgeLibrary.Credential storage pointer"
                         },
                         "id": 525,
@@ -1044,7 +1044,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 2182,
+                              "referencedDeclaration": 2180,
                               "type": "function (bool) pure",
                               "value": "require"
                             },
@@ -1265,7 +1265,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 2182,
+                              "referencedDeclaration": 2180,
                               "type": "function (bool) pure",
                               "value": "require"
                             },
@@ -1432,7 +1432,7 @@
                           "overloadedDeclarations": [
                             null
                           ],
-                          "referencedDeclaration": 2179,
+                          "referencedDeclaration": 2177,
                           "type": "msg",
                           "value": "msg"
                         },
@@ -1636,7 +1636,7 @@
                           "overloadedDeclarations": [
                             null
                           ],
-                          "referencedDeclaration": 2179,
+                          "referencedDeclaration": 2177,
                           "type": "msg",
                           "value": "msg"
                         },
@@ -2094,7 +2094,7 @@
                           "overloadedDeclarations": [
                             null
                           ],
-                          "referencedDeclaration": 2179,
+                          "referencedDeclaration": 2177,
                           "type": "msg",
                           "value": "msg"
                         },
@@ -2206,7 +2206,7 @@
                                 "attributes": {
                                   "argumentTypes": [
                                     {
-                                      "typeIdentifier": "t_struct$_Badge_$2103_memory",
+                                      "typeIdentifier": "t_struct$_Badge_$2101_memory",
                                       "typeString": "struct BadgeLibrary.Badge memory"
                                     },
                                     {
@@ -2227,7 +2227,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "Credential",
-                                  "referencedDeclaration": 2112,
+                                  "referencedDeclaration": 2110,
                                   "type": "type(struct BadgeLibrary.Credential storage pointer)"
                                 },
                                 "children": [
@@ -2237,7 +2237,7 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 2167,
+                                      "referencedDeclaration": 2165,
                                       "type": "type(library BadgeLibrary)",
                                       "value": "BadgeLibrary"
                                     },
@@ -2294,7 +2294,7 @@
                                       "isPure": false,
                                       "lValueRequested": false,
                                       "member_name": "Badge",
-                                      "referencedDeclaration": 2103,
+                                      "referencedDeclaration": 2101,
                                       "type": "type(struct BadgeLibrary.Badge storage pointer)"
                                     },
                                     "children": [
@@ -2304,7 +2304,7 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 2167,
+                                          "referencedDeclaration": 2165,
                                           "type": "type(library BadgeLibrary)",
                                           "value": "BadgeLibrary"
                                         },
@@ -2929,7 +2929,7 @@
                           "overloadedDeclarations": [
                             null
                           ],
-                          "referencedDeclaration": 2179,
+                          "referencedDeclaration": 2177,
                           "type": "msg",
                           "value": "msg"
                         },
@@ -4177,7 +4177,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 2182,
+                              "referencedDeclaration": 2180,
                               "type": "function (bool) pure",
                               "value": "require"
                             },
@@ -4303,7 +4303,7 @@
                             "attributes": {
                               "contractScope": null,
                               "name": "BadgeLibrary.Credential",
-                              "referencedDeclaration": 2112,
+                              "referencedDeclaration": 2110,
                               "type": "struct BadgeLibrary.Credential storage pointer"
                             },
                             "id": 818,
@@ -4404,7 +4404,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "issuer",
-                              "referencedDeclaration": 2094,
+                              "referencedDeclaration": 2092,
                               "type": "address"
                             },
                             "children": [
@@ -4416,7 +4416,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "badge",
-                                  "referencedDeclaration": 2105,
+                                  "referencedDeclaration": 2103,
                                   "type": "struct BadgeLibrary.Badge memory"
                                 },
                                 "children": [
@@ -4452,7 +4452,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "description",
-                              "referencedDeclaration": 2096,
+                              "referencedDeclaration": 2094,
                               "type": "string memory"
                             },
                             "children": [
@@ -4464,7 +4464,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "badge",
-                                  "referencedDeclaration": 2105,
+                                  "referencedDeclaration": 2103,
                                   "type": "struct BadgeLibrary.Badge memory"
                                 },
                                 "children": [
@@ -4500,7 +4500,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "name",
-                              "referencedDeclaration": 2098,
+                              "referencedDeclaration": 2096,
                               "type": "string memory"
                             },
                             "children": [
@@ -4512,7 +4512,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "badge",
-                                  "referencedDeclaration": 2105,
+                                  "referencedDeclaration": 2103,
                                   "type": "struct BadgeLibrary.Badge memory"
                                 },
                                 "children": [
@@ -4548,7 +4548,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "image",
-                              "referencedDeclaration": 2100,
+                              "referencedDeclaration": 2098,
                               "type": "string memory"
                             },
                             "children": [
@@ -4560,7 +4560,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "badge",
-                                  "referencedDeclaration": 2105,
+                                  "referencedDeclaration": 2103,
                                   "type": "struct BadgeLibrary.Badge memory"
                                 },
                                 "children": [
@@ -4596,7 +4596,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "version",
-                              "referencedDeclaration": 2102,
+                              "referencedDeclaration": 2100,
                               "type": "string memory"
                             },
                             "children": [
@@ -4608,7 +4608,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "badge",
-                                  "referencedDeclaration": 2105,
+                                  "referencedDeclaration": 2103,
                                   "type": "struct BadgeLibrary.Badge memory"
                                 },
                                 "children": [
@@ -4644,7 +4644,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "expires",
-                              "referencedDeclaration": 2107,
+                              "referencedDeclaration": 2105,
                               "type": "uint256"
                             },
                             "children": [
@@ -4675,7 +4675,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "recipient",
-                              "referencedDeclaration": 2109,
+                              "referencedDeclaration": 2107,
                               "type": "address"
                             },
                             "children": [
@@ -4706,7 +4706,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "txnKey",
-                              "referencedDeclaration": 2111,
+                              "referencedDeclaration": 2109,
                               "type": "bytes32"
                             },
                             "children": [
@@ -5150,7 +5150,7 @@
                             "attributes": {
                               "contractScope": null,
                               "name": "BadgeLibrary.Credential",
-                              "referencedDeclaration": 2112,
+                              "referencedDeclaration": 2110,
                               "type": "struct BadgeLibrary.Credential storage pointer"
                             },
                             "id": 881,
@@ -5280,7 +5280,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "getIntegrityHash",
-                              "referencedDeclaration": 2166,
+                              "referencedDeclaration": 2164,
                               "type": "function (address,string memory,string memory,string memory,string memory,address) view returns (bytes32)"
                             },
                             "children": [
@@ -5290,7 +5290,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 2167,
+                                  "referencedDeclaration": 2165,
                                   "type": "type(library BadgeLibrary)",
                                   "value": "BadgeLibrary"
                                 },
@@ -5311,7 +5311,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "issuer",
-                              "referencedDeclaration": 2094,
+                              "referencedDeclaration": 2092,
                               "type": "address"
                             },
                             "children": [
@@ -5323,7 +5323,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "badge",
-                                  "referencedDeclaration": 2105,
+                                  "referencedDeclaration": 2103,
                                   "type": "struct BadgeLibrary.Badge memory"
                                 },
                                 "children": [
@@ -5359,7 +5359,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "description",
-                              "referencedDeclaration": 2096,
+                              "referencedDeclaration": 2094,
                               "type": "string memory"
                             },
                             "children": [
@@ -5371,7 +5371,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "badge",
-                                  "referencedDeclaration": 2105,
+                                  "referencedDeclaration": 2103,
                                   "type": "struct BadgeLibrary.Badge memory"
                                 },
                                 "children": [
@@ -5407,7 +5407,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "name",
-                              "referencedDeclaration": 2098,
+                              "referencedDeclaration": 2096,
                               "type": "string memory"
                             },
                             "children": [
@@ -5419,7 +5419,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "badge",
-                                  "referencedDeclaration": 2105,
+                                  "referencedDeclaration": 2103,
                                   "type": "struct BadgeLibrary.Badge memory"
                                 },
                                 "children": [
@@ -5455,7 +5455,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "image",
-                              "referencedDeclaration": 2100,
+                              "referencedDeclaration": 2098,
                               "type": "string memory"
                             },
                             "children": [
@@ -5467,7 +5467,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "badge",
-                                  "referencedDeclaration": 2105,
+                                  "referencedDeclaration": 2103,
                                   "type": "struct BadgeLibrary.Badge memory"
                                 },
                                 "children": [
@@ -5503,7 +5503,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "version",
-                              "referencedDeclaration": 2102,
+                              "referencedDeclaration": 2100,
                               "type": "string memory"
                             },
                             "children": [
@@ -5515,7 +5515,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "badge",
-                                  "referencedDeclaration": 2105,
+                                  "referencedDeclaration": 2103,
                                   "type": "struct BadgeLibrary.Badge memory"
                                 },
                                 "children": [
@@ -5551,7 +5551,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "recipient",
-                              "referencedDeclaration": 2109,
+                              "referencedDeclaration": 2107,
                               "type": "address"
                             },
                             "children": [
@@ -5610,5 +5610,5 @@
   },
   "networks": {},
   "schemaVersion": "1.0.1",
-  "updatedAt": "2017-12-29T12:58:31.823Z"
+  "updatedAt": "2018-01-02T09:04:20.805Z"
 }

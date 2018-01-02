@@ -15,6 +15,7 @@ contract AuthorizedIssuer {
 
     /// @notice authorized issuers on this contract
     mapping (address=>AuthorizedAccount) public authorizedAccountsMap;
+
     /// @notice list of authorized acounts
     address[] authorizedAccountsList;
 
@@ -40,24 +41,28 @@ contract AuthorizedIssuer {
     }
 
     event NewAccountAuthorized(address _newIssuer);
-    /// @notice add a new account that will be able to issue credentials from this contract
+    /** @dev add a new account that will be able to issue credentials from this contract
+      * @param _newIssuer address of the account to authorize
+    */ 
     function authorzeAccount(address _newIssuer) public onlyAdmin(msg.sender) {
         authorizedAccountsMap[_newIssuer] = AuthorizedAccount(_newIssuer, authorizedAccountsList.push(_newIssuer)-1, true);
         NewAccountAuthorized(_newIssuer);
     }
 
     event AuthorizedAccountRemoved(address _issuer);
-    /// @notice remove an authorized issuer from this contract 
-    /// @param _issuer address of the account that will be authorized
-    //@TODO remove account entirely from contract
+    /** @dev remove an authorized issuer from this contract 
+      * @param _issuer address of the account that will be authorized
+    */ 
     function removeAuthorizedAccount(address _issuer) public onlyAdmin(msg.sender) {
         authorizedAccountsMap[_issuer].isAuthorized = false;
         AuthorizedAccountRemoved(_issuer);
     }
 
-    /// @notice gets a authorized account, can be used in conjuntion with numOfAuthorizedAccounts to get all in UI
-    /// @param _index the index of the account in the authorizedAccountsList
-    function getAuthorizedAccount(uint _index) public returns(address _issuer) {
+    /** @dev gets a authorized account, can be used in conjuntion with numOfAuthorizedAccounts to get all in UI
+      * @param _index the index of the account in the authorizedAccountsList
+      * @return _issuer account address
+    */ 
+    function getAuthorizedAccount(uint _index) public view returns(address _issuer) {
         if (authorizedAccountsMap[authorizedAccountsList[_index]].isAuthorized) {
             return authorizedAccountsList[_index];
         } else {
@@ -65,8 +70,10 @@ contract AuthorizedIssuer {
         }
     }
 
-    /// @notice returns number of accounts ever authorized 
-    function getNumberOfAuthorizedAccounts() public returns(uint _numOfAccounts) {
+    /** @dev get the number of authorized accounts for this issuer contract
+      * @return _numOfAccounts number of accounts
+    */ 
+    function getNumberOfAuthorizedAccounts() public view returns(uint _numOfAccounts) {
         return authorizedAccountsList.length;
     }
 }

@@ -27,9 +27,32 @@ const getBadgeObj = (data) => {
     return badge;
 }
 
+const getTxn = (data) => {
+    // bytes32 key; 
+    // bytes32 integrityHash;
+    // address recipient;
+    // bool revoked;
+    let txn = {};
+    ({0: txn._key, 1:txn._integrityHash, 2:txn._recipient, 3:txn._revoked} = data);
+    return txn;
+}
+
+const issueCredential = async (issuer, holder) => {
+    await issuer.createBadge(...Object.values(createBadgeParams));
+    await holder.addTrustedIssuer(issuer.address);
+    const issueParams = {
+        _badgeName: createBadgeParams._name,
+        _recipient: holder.address,
+        _expires: 0,
+    }
+    await issuer.issue(...Object.values(issueParams));
+}
+
 module.exports = {
     issuerInitialParams, 
     createBadgeParams,
     getCredentialObj,
-    getBadgeObj
+    getBadgeObj,
+    getTxn,
+    issueCredential
 }
