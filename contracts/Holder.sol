@@ -1,26 +1,26 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.17;
 
 import "BadgeLibrary/contracts/BadgeLibrary.sol";
-import "./Issuer.sol";
-
 
 contract Holder {
     
     /// @notice address where holder holds there badgeforce tokens
     address public holder;
 
-    /// @notice array of holders credentials 
-    BadgeLibrary.BFCredential[] credentials;
+    /// @notice mapping of name hash to credential
+    /// @notice array of hash names
+    struct CredentialVault {
+        mapping (bytes32=>BadgeLibrary.Credential) credentials;
+        mapping (bytes32=>uint) indexMap;
+        uint numOfPendingCreds;
+        bytes32[] keys;
+    }
+
+    /// @notice vault holding credentials
+    CredentialVault credentialVault;
 
     /// @notice mapping of trusted issuers 
     mapping (address=>bool) public trustedIssuers;
-
-    string constant INVALID_TRANSACTION = "Invalid transaction: the transaction does not exist";
-    string constant INVALID_INTEGRITYHASH = "Invalid data integrity: data in credential does not match original transaction data";
-    string constant INVALID_RECIPIENT = "Invalid recipient: recipient does not match original transaction data";
-    string constant INVALID_TXTKEY = "Invalid transaction key: transaction keys don't match";
-    string constant REVOKED = "Invalid credential: credential revoked";
-    string constant VALID_CREDENTIAL = "Credential is valid";
 
     function Holder(address _holder) {
         holder = _holder;
@@ -53,134 +53,122 @@ contract Holder {
         trustedIssuers[_issuer] = false;
     }
 
-    event LogNewCredential(address _issuer, string name);
-    /// @notice store a new credential on this contract 
+    event NewPendingCredential(string _name, address _issuer);
+    /**
+     *  @dev put a new credential inside the pending queue
+     */
     function storeCredential(
         address _issuer,
         string _description,
         string _name,
         string _image,
         string _version,
-        string _json,
         uint _expires,
         address _recipient,
-        bytes32 _txKey
+        bytes32 _txnKey
     ) public trusted(msg.sender)
     {
-        credentials.push(
-            BadgeLibrary.BFCredential(
-                _issuer,
-                _description,
-                _name,
-                _image,
-                _version,
-                _json,
+        credentialVault.credentials[_txnKey] = BadgeLibrary.Credential(
+                BadgeLibrary.Badge(_issuer, _description, _name, _image, _version),
                 _expires,
                 _recipient,
-                _txKey
-        ));
-        LogNewCredential(_issuer, _name);
+                _txnKey,
+                false
+        );
+        credentialVault.indexMap[_txnKey] = credentialVault.keys.push(_txnKey)-1;
+        credentialVault.numOfPendingCreds++;
+        NewPendingCredential(_name, _issuer);
     }
 
-    function verifyCredential(uint credentialIndex) constant public returns(bool verified, string message) {
-        BadgeLibrary.BFCredential memory credential = credentials[credentialIndex];
-        bytes32 integrityHash = BadgeLibrary.getIntegrityHash(
-            credential.issuer, 
-            credential.description, 
-            credential.name, 
-            credential.image, 
-            credential.version, 
-            credential.recipient
-        );
-        Issuer issuer = Issuer(credential.issuer);
-        var (_revoked, _integrityHashCheck, _recipientCheck) = issuer._checkTransaction(
-            credential.txKey, 
-            integrityHash, 
-            credential.recipient
-        );
-        if (_revoked) {
-            return(false, REVOKED);
-        } else if (!_recipientCheck) {
-            return(_recipientCheck, INVALID_RECIPIENT);
-        } else if (!_integrityHashCheck) {
-            return(_integrityHashCheck, INVALID_INTEGRITYHASH);
-        } else {
-            return(true, VALID_CREDENTIAL);
-        }
+    event NewCredentialAccepted(bytes32 _txnKey);
+    function acceptCredential(bytes32 _txnKey) authorized(msg.sender) public {
+        require(!credentialVault.credentials[_txnKey].active);
+        credentialVault.credentials[_txnKey].active = true;
+        credentialVault.numOfPendingCreds--;
+        NewCredentialAccepted(_txnKey);
+    }
+
+    event CredentialRejected(bytes32 _txnKey);
+    function rejectCredential(bytes32 _txnKey) authorized(msg.sender) public {
+        require(!credentialVault.credentials[_txnKey].active);
+        _deleteCredential(_txnKey);
+        credentialVault.numOfPendingCreds--;
+        CredentialRejected(_txnKey);
+    }
+
+    event CredentialDeleted(bytes32 _txnKey, uint count);
+    /// @notice delete a credential 
+    function deleteCredential(bytes32 _txnKey) authorized(msg.sender) public returns(bool success) {
+        success = _deleteCredential(_txnKey);
+        CredentialDeleted(_txnKey, credentialVault.keys.length);
+        return success;
+    }
+
+    function _deleteCredential(bytes32 _txnKey) public returns(bool success) {
+        delete credentialVault.credentials[_txnKey];
+        uint rowToDelete = credentialVault.indexMap[_txnKey]; 
+        bytes32 rowToMove = credentialVault.keys[credentialVault.keys.length-1];
+        credentialVault.indexMap[rowToMove] = rowToDelete; 
+        credentialVault.keys[rowToDelete] = rowToMove; 
+        credentialVault.keys.length--;
+        delete credentialVault.indexMap[_txnKey];
+        delete credentialVault.credentials[_txnKey];
+        return true;
     }
 
     /// @notice get a holders credential 
-    /// @param _index index of credential to return 
-    //@TODO should use hash of name or txtkey for retrieval from a map
-    function getCredential(uint _index) constant public  returns (
+    /// @param _name index of credential to return 
+    function getCredential(bytes32 _txnKey) constant public  returns (
         address _issuer,
         string _description,
         string _name,
         string _image,
         string _version,
-        string _json,
         uint _expires,
         address _recipient,
-        bytes32 _txKey
+        bytes32 txnKey,
+        bool _active
     ) {
-        require(credentials.length > 0 && _index >= 0);
-        BadgeLibrary.BFCredential memory cred = credentials[_index];
+        require(credentialVault.keys.length > 0);
+        BadgeLibrary.Credential memory cred = credentialVault.credentials[_txnKey];
         return (
-            cred.issuer,
-            cred.description,
-            cred.name,
-            cred.image,
-            cred.version,
-            cred.json,
+            cred.badge.issuer,
+            cred.badge.description,
+            cred.badge.name,
+            cred.badge.image,
+            cred.badge.version,
             cred.expires,
             cred.recipient,
-            cred.txKey
+            cred.txnKey,
+            cred.active
         );
     }
 
-    /// @notice get number of credentials 
-    function getNumberOfCredentials() constant public returns(uint count) {
-        return credentials.length;
+    /// @notice helper function for UI to retrieve all names then retrieve the credentials
+    /// @param _index index of the name you want
+    function getTxnKey(uint _index) constant public returns(bytes32 name) {
+        return credentialVault.keys[_index];
     }
 
-    function extractAddress(bytes32 _hash, bytes _sig) constant returns(address _issuer) {
-        bytes32 r;
-        bytes32 s;
-        uint8 v;
+    /// @dev get number of credentials 
+    function getNumberOfCredentials() constant public returns(uint count) {
+        return credentialVault.keys.length;
+    }
 
-        if (_sig.length != 65)
-          return 0;
+    /// @dev get number of pending credentials 
+    function getNumberOfPendingCredentials() constant public returns(uint count) {
+        return credentialVault.numOfPendingCreds;
+    }
 
-        // The signature format is a compact form of:
-        //   {bytes32 r}{bytes32 s}{uint8 v}
-        // Compact means, uint8 is not padded to 32 bytes.
-        assembly {
-            r := mload(add(_sig, 32))
-            s := mload(add(_sig, 64))
-
-            // Here we are loading the last 32 bytes. We exploit the fact that
-            // 'mload' will pad with zeroes if we overread.
-            // There is no 'mload8' to do this, but that would be nicer.
-            v := byte(0, mload(add(_sig, 96)))
-
-            // Alternative solution:
-            // 'byte' is not working due to the Solidity parser, so lets
-            // use the second best option, 'and'
-            // v := and(mload(add(sig, 65)), 255)
-        }
-
-        // albeit non-transactional signatures are not specified by the YP, one would expect it
-        // to match the YP range of [27, 28]
-        //
-        // geth uses [0, 1] and some clients have followed. This might change, see:
-        //  https://github.com/ethereum/go-ethereum/issues/2053
-        if (v < 27)
-          v += 27;
-
-        if (v != 27 && v != 28)
-            return 0;
-
-        _issuer = ecrecover(_hash, v, r, s);
-        return _issuer;
+    function recomputePOIHash(bytes32 _txnKey) constant public returns(bytes32 poiHash) {
+        BadgeLibrary.Credential memory credential = credentialVault.credentials[_txnKey];
+        return BadgeLibrary.getIntegrityHash(
+            credential.badge.issuer, 
+            credential.badge.description, 
+            credential.badge.name, 
+            credential.badge.image, 
+            credential.badge.version, 
+            credential.recipient
+        );
     }
 }

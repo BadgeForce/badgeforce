@@ -8,11 +8,12 @@
   "license": "MIT",
   "dependencies": {
     "BadgeForceToken": "BadgeForce/BadgeForceToken.git",
-    "BadgeLibrary": "BadgeForce/BadgeLibrary.git",
-    "babel-register": "^6.26.0"
+    "BadgeLibrary": "git+https://github.com/BadgeForce/BadgeLibrary.git#extend-data",
+    "babel-register": "^6.26.0",
+    "truffle": "^4.0.1"
   },
   "scripts": {
-    "test": "node_modules/truffle/build/cli.bundled.js compile && node_modules/truffle/build/cli.bundled.js test"
+    "test": "rm -rf ./build && node_modules/truffle/build/cli.bundled.js compile && node_modules/truffle/build/cli.bundled.js test"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -23,7 +24,6 @@
     "babel-preset-stage-0": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
     "babel-preset-stage-3": "^6.24.1",
-    "solidity-test-util": "^1.0.8",
-    "truffle": "^4.0.1"
+    "solidity-test-util": "^1.0.8"
   }
 }
