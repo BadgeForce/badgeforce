@@ -1,6 +1,8 @@
 # badgeforce
 Solidity Smart contracts for Issuers and Holders. 
 
+![Build status](https://travis-ci.org/BadgeForce/badgeforce.svg?branch=master)
+
 ## Install Dependecies 
 
 We are using [truffle](https://truffleframework.com) and [ganache-cli](https://github.com/trufflesuite/ganache-cli) for our smart contract development
