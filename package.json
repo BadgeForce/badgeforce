@@ -8,7 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "BadgeForceToken": "BadgeForce/BadgeForceToken.git",
-    "BadgeLibrary": "git+https://github.com/BadgeForce/BadgeLibrary.git#extend-data",
+    "BadgeLibrary": "git+https://github.com/BadgeForce/BadgeLibrary.git",
     "babel-register": "^6.26.0",
     "truffle": "^4.0.1",
     "ganache-cli": "^6.0.3"
