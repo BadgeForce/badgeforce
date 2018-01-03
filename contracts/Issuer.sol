@@ -26,6 +26,11 @@ contract Issuer is Verifier {
         BFT = BadgeForceToken(_token);
     }
 
+    modifier payForIssue() {
+        require(BFT.burnForIssue());
+        _;
+    }
+
     event CredentialIssued(
         string _badgeName,
         address indexed _recipient
@@ -38,7 +43,7 @@ contract Issuer is Verifier {
         string _badgeName, 
         address _recipient, 
         uint _expires) 
-    public authorized(msg.sender)
+    public authorized(msg.sender) payForIssue()
     {
         uint expires;
         if (_expires <= 0) {
