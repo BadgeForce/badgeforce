@@ -7200,11 +7200,11 @@
     "3000": {
       "events": {},
       "links": {
-        "BadgeLibrary": "0xd035c9ed96f1ceeecbc26c063b2f86bbf28c609e"
+        "BadgeLibrary": "0xcc2f51fae2343251680e49e65f5173381d8d434e"
       },
-      "address": "0x2665ad5d328021d40bcf99786856d49326524237"
+      "address": "0xac1877030017d66ec04b6ab28ae146854e555eaa"
     }
   },
   "schemaVersion": "1.0.1",
-  "updatedAt": "2018-01-05T08:23:44.325Z"
+  "updatedAt": "2018-01-05T08:36:01.445Z"
 }

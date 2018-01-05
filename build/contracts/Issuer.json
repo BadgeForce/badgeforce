@@ -3623,11 +3623,11 @@
     "3000": {
       "events": {},
       "links": {
-        "BadgeLibrary": "0xd035c9ed96f1ceeecbc26c063b2f86bbf28c609e"
+        "BadgeLibrary": "0xcc2f51fae2343251680e49e65f5173381d8d434e"
       },
-      "address": "0x14accde2d0848d95b5d094371920c44c0ac89d50"
+      "address": "0xb554d36ad6eae984275b5896ad5300f68643cc06"
     }
   },
   "schemaVersion": "1.0.1",
-  "updatedAt": "2018-01-05T08:23:44.318Z"
+  "updatedAt": "2018-01-05T08:36:01.438Z"
 }

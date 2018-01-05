@@ -4978,10 +4978,10 @@
     "3000": {
       "events": {},
       "links": {
-        "BadgeLibrary": "0xd035c9ed96f1ceeecbc26c063b2f86bbf28c609e"
+        "BadgeLibrary": "0xcc2f51fae2343251680e49e65f5173381d8d434e"
       }
     }
   },
   "schemaVersion": "1.0.1",
-  "updatedAt": "2018-01-05T08:23:44.321Z"
+  "updatedAt": "2018-01-05T08:36:01.442Z"
 }
