@@ -7,14 +7,16 @@
   "author": "engineering@badgeforce.io",
   "license": "MIT",
   "dependencies": {
-    "BadgeForceToken": "BadgeForce/BadgeForceToken.git",
+    "BadgeForceToken": "https://github.com/BadgeForce/BadgeForceToken",
     "BadgeLibrary": "git+https://github.com/BadgeForce/BadgeLibrary.git",
     "babel-register": "^6.26.0",
+    "ganache-cli": "^6.0.3",
     "truffle": "^4.0.1",
-    "ganache-cli": "^6.0.3"
+    "truffle-artifactor": "1.0.2"
   },
   "scripts": {
-    "test": "rm -rf ./build && node_modules/truffle/build/cli.bundled.js compile && node_modules/truffle/build/cli.bundled.js test"
+    "test": "rm -rf ./build && node_modules/truffle/build/cli.bundled.js compile && node_modules/truffle/build/cli.bundled.js test",
+    "migrate": "rm -rf ./build && node_modules/truffle/build/cli.bundled.js migrate"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

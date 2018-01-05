@@ -1,5 +1,5 @@
-const issuer_artifacts = require('./build/contracts/Issuer.json');
-const holder_artifacts = require('./build/contracts/Holder.json');
+const issuer_artifacts = artifacts.require('./build/contracts/Issuer.json');
+const holder_artifacts = artifacts.require('./build/contracts/Holder.json');
 
 module.exports = {
     issuer: issuer_artifacts, 
