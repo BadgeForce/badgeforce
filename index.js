@@ -9,7 +9,7 @@ const verifier_artifacts = require('./build/contracts/Verifier.json');
 module.exports = {
     issuer: issuer_artifacts,
     holder: holder_artifacts,
-    badgeLibrary: badgeLibrary_artifacts:
+    badgeLibrary: badgeLibrary_artifacts:,
     badgeManager_artifacts: badgeManager_artifacts,
     authorizedIssuer_artifacts: authorizedIssuer_artifacts,
     transactionManager_artifacts: transactionManager_artifacts,
