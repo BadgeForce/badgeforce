@@ -5,7 +5,7 @@ const utils = require("./test-utils");
 
 contract('Issuer', function (accounts) {
 
-  let token; 
+  let token;
   let issuer;
   //create new smart contract instances before each test method
   beforeEach(async function () {
@@ -19,6 +19,8 @@ contract('Issuer', function (accounts) {
     assert.equal(await issuer.admin(), utils.issuerInitialParams._adminWalletAddr);
     assert.equal(await issuer.name(), utils.issuerInitialParams._name);
     assert.equal(await issuer.url(), utils.issuerInitialParams._url);
+    await issuer.createBadge(...Object.values(utils.createBadgeParams));
+
   });
   it("should return issuer info", async function() {
     const info = await issuer.getInfo();
@@ -45,7 +47,7 @@ contract('Issuer', function (accounts) {
     assert.equal(credential._name, issueParams._badgeName);
     assert.equal(credential._recipient, issueParams._recipient);
     //bytes32 key; bytes32 integrityHash; address recipient;
-    const issueTransaction = await issuer.credentialTxnMap(credential._txKey);    
+    const issueTransaction = await issuer.credentialTxnMap(credential._txKey);
     assert.equal(issueTransaction[2], credential._recipient);
-  }); 
+  });
 });
