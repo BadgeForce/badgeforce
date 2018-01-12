@@ -5,7 +5,7 @@ import "BadgeLibrary/contracts/BadgeLibrary.sol";
 import "./AuthorizedIssuer.sol";
 
 contract BadgeManager is AuthorizedIssuer {
-    
+
     /// @notice mapping of badgename hash to badge
     /// @notice array of badge hash names
     struct Vault {
@@ -14,7 +14,7 @@ contract BadgeManager is AuthorizedIssuer {
         bytes32[] badgeHashNames;
     }
 
-    /// @notice storage for earnable badges 
+    /// @notice storage for earnable badges
     Vault badgeVault;
 
     function BadgeManager(address _adminWalletAddr) public AuthorizedIssuer(_adminWalletAddr) {}
@@ -37,29 +37,35 @@ contract BadgeManager is AuthorizedIssuer {
         _;
     }
 
+    /// @notice checks if a badge exists by name
+    modifier badgeNameHashExists(bytes32 _badgeNameHash) {
+        require(badgeVault.badgeHashNames.length > 0 && badgeVault.badgeHashNames[badgeVault.indexMap[_badgeNameHash]] == _badgeNameHash);
+        _;
+    }
+
     event BadgeCreated(
         string _name,
         address indexed _issuer
-    ); 
-    /// @notice create a new badge store it in the badging map 
-    /// @param _description Description of the badge 
+    );
+    /// @notice create a new badge store it in the badging map
+    /// @param _description Description of the badge
     /// @param _name name of the badge
     /// @param _image badge image
     /// @param _version badge version
     function createBadge(
-        string _description, 
+        string _description,
         string _name,
         string _image,
-        string _version)     
+        string _version)
         authorized(msg.sender) uniqueBadge(_name) public
-        {   
+        {
         bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
         uint index = badgeVault.badgeHashNames.push(badgeNameHash)-1;
         BadgeLibrary.Badge memory badge = BadgeLibrary.Badge(
-            address(this), 
-            _description, 
+            address(this),
+            _description,
             _name,
-            _image, 
+            _image,
             _version
         );
         badgeVault.badges[badgeNameHash] = badge;
@@ -68,16 +74,16 @@ contract BadgeManager is AuthorizedIssuer {
     }
 
     event BadgeDeleted(string _name, uint count);
-    /// @notice delete a created badge 
-    function deleteBadge(string _name) 
+    /// @notice delete a created badge
+    function deleteBadge(string _name)
     authorized(msg.sender)
-    public returns(bool success) 
+    public returns(bool success)
     {
         bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
         uint rowToDelete = badgeVault.indexMap[badgeNameHash];
         bytes32 rowToMove = badgeVault.badgeHashNames[badgeVault.badgeHashNames.length-1];
-        badgeVault.indexMap[rowToMove] = rowToDelete; 
-        badgeVault.badgeHashNames[rowToDelete] = rowToMove; 
+        badgeVault.indexMap[rowToMove] = rowToDelete;
+        badgeVault.badgeHashNames[rowToDelete] = rowToMove;
         badgeVault.badgeHashNames.length--;
         delete badgeVault.badges[badgeNameHash];
         delete badgeVault.indexMap[badgeNameHash];
@@ -85,33 +91,32 @@ contract BadgeManager is AuthorizedIssuer {
         BadgeDeleted(_name, badgeVault.badgeHashNames.length);
         return true;
     }
- 
-    // @notice get the number of badges (used by frontend as iterator index to retrieve each badge)     authorized(_sig, _v, _r, _s) 
+
+    // @notice get the number of badges (used by frontend as iterator index to retrieve each badge)     authorized(_sig, _v, _r, _s)
     function getNumberOfBadges()
     constant public returns(uint count)
-    {   
+    {
         return badgeVault.badgeHashNames.length;
     }
 
     /// @notice get a badge by it's index (should be used by frontend in a loop to get all the badges)
-    /// @param _name name of the badge to get inside the badge map
-    function getBadge(string _name) constant badgeExists(_name) public returns(
-        address issuer, 
-        string description, 
-        string bName, 
-        string image, 
+    /// @param _badgeNameHash name of the badge to get inside the badge map
+    function getBadge(bytes32 _badgeNameHash) badgeNameHashExists(_badgeNameHash) constant public returns(
+        address issuer,
+        string description,
+        string bName,
+        string image,
         string version
     ) {
-        bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
-        BadgeLibrary.Badge memory badge = badgeVault.badges[badgeNameHash];
+        BadgeLibrary.Badge memory badge = badgeVault.badges[_badgeNameHash];
         return (
-            badge.issuer, 
+            badge.issuer,
             badge.description,
-            badge.name, 
+            badge.name,
             badge.image,
             badge.version
         );
-    } 
+    }
 
     /// @notice helper function for UI to retrieve all names then retrieve the badges
     /// @param _index index of the name you want

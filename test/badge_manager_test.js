@@ -11,10 +11,11 @@ contract('BadgeManager', function (accounts) {
   it("should retrieve number of badges", async function() {
     const numOfBadges = await badgeManager.getNumberOfBadges();
     assert.equal(numOfBadges, 0);
-  });   
+  });
   it("should create badge and retrieve it", async function() {
     await badgeManager.createBadge(...Object.values(utils.createBadgeParams));
-    const data = await badgeManager.getBadge(utils.createBadgeParams._name);
+    const badgeNameHash = await badgeManager.getNameByIndex(0);
+    const data = await badgeManager.getBadge(badgeNameHash);
     const badge = utils.getBadgeObj(data);
     assert.equal(badge._issuer, badgeManager.address);
     assert.equal(badge._description, utils.createBadgeParams._description);
