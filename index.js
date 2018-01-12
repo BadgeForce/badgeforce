@@ -10,8 +10,8 @@ module.exports = {
     issuer: issuer_artifacts,
     holder: holder_artifacts,
     badgeLibrary: badgeLibrary_artifacts,
-    badgeManager_artifacts: badgeManager_artifacts,
-    authorizedIssuer_artifacts: authorizedIssuer_artifacts,
-    transactionManager_artifacts: transactionManager_artifacts,
-    verifier_artifacts: verifier_artifacts
+    badgeManager: badgeManager_artifacts,
+    authorizedIssuer: authorizedIssuer_artifacts,
+    transactionManagers: transactionManager_artifacts,
+    verifiers: verifier_artifacts
 };
