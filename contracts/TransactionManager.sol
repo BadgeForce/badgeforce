@@ -1,8 +1,9 @@
 pragma solidity ^0.4.17;
 
 import "./BadgeManager.sol";
+import "./BFUtils.sol";
 
-contract TransactionManager is BadgeManager {
+contract TransactionManager is BadgeManager, BFUtils {
 
     struct Transaction {
         bytes32 key;

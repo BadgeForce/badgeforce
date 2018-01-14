@@ -2,7 +2,9 @@ pragma solidity ^0.4.17;
 
 import "BadgeLibrary/contracts/BadgeLibrary.sol";
 
-contract Holder {
+import "./BFUtils.sol";
+
+contract Holder is BFUtils {
 
     /// @notice address where holder holds there badgeforce tokens
     address public holder;
@@ -162,7 +164,7 @@ contract Holder {
 
     function recomputePOIHash(bytes32 _txnKey) constant public returns(bytes32 poiHash) {
         BadgeLibrary.Credential memory credential = credentialVault.credentials[_txnKey];
-        return BadgeLibrary.getIntegrityHash(
+        return getIntegrityHash(
             credential.badge.issuer,
             credential.badge.description,
             credential.badge.name,
