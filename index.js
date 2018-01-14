@@ -12,6 +12,6 @@ module.exports = {
     badgeLibrary: badgeLibrary_artifacts,
     badgeManager: badgeManager_artifacts,
     authorizedIssuer: authorizedIssuer_artifacts,
-    transactionManagers: transactionManager_artifacts,
+    transactionManager: transactionManager_artifacts,
     verifiers: verifier_artifacts
 };

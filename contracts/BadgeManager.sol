@@ -1,15 +1,30 @@
 pragma solidity ^0.4.17;
 
-import "BadgeLibrary/contracts/BadgeLibrary.sol";
-
 import "./AuthorizedIssuer.sol";
 
 contract BadgeManager is AuthorizedIssuer {
+    /// @notice represents simple details about a earnable badge
+    struct Badge {
+        address issuer;
+        string description;
+        string name;
+        string image;
+        string version;
+    }
+
+    /// @notice represents details of an issued badge
+    struct Credential {
+        Badge badge;
+        uint expires;
+        address recipient;
+        bytes32 txnKey;
+        bool active;
+    }
 
     /// @notice mapping of badgename hash to badge
     /// @notice array of badge hash names
     struct Vault {
-        mapping (bytes32=>BadgeLibrary.Badge) badges;
+        mapping (bytes32=> Badge) badges;
         mapping (bytes32=>uint) indexMap;
         bytes32[] badgeHashNames;
     }
@@ -26,13 +41,13 @@ contract BadgeManager is AuthorizedIssuer {
     }
 
     function isUnique(string _name) public constant returns(bool unique) {
-        bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
+        bytes32 badgeNameHash = getBadgeNameHash(_name);
         return (badgeVault.badgeHashNames.length == 0 || badgeVault.badgeHashNames[badgeVault.indexMap[badgeNameHash]] != badgeNameHash);
     }
 
     /// @notice checks if a badge exists by name
     modifier badgeExists(string _name) {
-        bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
+        bytes32 badgeNameHash = getBadgeNameHash(_name);
         require(badgeVault.badgeHashNames.length > 0 && badgeVault.badgeHashNames[badgeVault.indexMap[badgeNameHash]] == badgeNameHash);
         _;
     }
@@ -59,9 +74,9 @@ contract BadgeManager is AuthorizedIssuer {
         string _version)
         authorized(msg.sender) uniqueBadge(_name) public
         {
-        bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
+        bytes32 badgeNameHash = getBadgeNameHash(_name);
         uint index = badgeVault.badgeHashNames.push(badgeNameHash)-1;
-        BadgeLibrary.Badge memory badge = BadgeLibrary.Badge(
+        Badge memory badge = Badge(
             address(this),
             _description,
             _name,
@@ -79,7 +94,7 @@ contract BadgeManager is AuthorizedIssuer {
     authorized(msg.sender)
     public returns(bool success)
     {
-        bytes32 badgeNameHash = BadgeLibrary.getBadgeNameHash(_name);
+        bytes32 badgeNameHash = getBadgeNameHash(_name);
         uint rowToDelete = badgeVault.indexMap[badgeNameHash];
         bytes32 rowToMove = badgeVault.badgeHashNames[badgeVault.badgeHashNames.length-1];
         badgeVault.indexMap[rowToMove] = rowToDelete;
@@ -108,7 +123,7 @@ contract BadgeManager is AuthorizedIssuer {
         string image,
         string version
     ) {
-        BadgeLibrary.Badge memory badge = badgeVault.badges[_badgeNameHash];
+        Badge memory badge = badgeVault.badges[_badgeNameHash];
         return (
             badge.issuer,
             badge.description,
@@ -124,4 +139,33 @@ contract BadgeManager is AuthorizedIssuer {
         return badgeVault.badgeHashNames[_index];
     }
 
+    /// @notice compute hash of badgename
+    function getBadgeNameHash(string _badgename) pure public returns (bytes32 _hash) {
+        return keccak256(_badgename);
+    }
+
+    /// @notice compute hash for badge linking
+    function getBadgeLinkHash(string _name, address _issuer) pure public returns (bytes32 hash) {
+        return keccak256(_name, _issuer);
+    }
+
+    /// @notice compute integrity hash of credential data
+    function getIntegrityHash(
+        address issuer,
+        string description,
+        string name,
+        string image,
+        string version,
+        address recipient
+    ) pure public returns(bytes32 _hash)
+    {
+        return keccak256(
+                issuer,
+                description,
+                name,
+                image,
+                version,
+                recipient
+        );
+    }
 }
