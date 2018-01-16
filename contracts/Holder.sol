@@ -91,17 +91,22 @@ contract Holder is BFUtils {
     }
 
     event CredentialRejected(bytes32 _txnKey);
-    function rejectCredential(bytes32 _txnKey) authorized(msg.sender) public {
+    function rejectCredential(bytes32 _txnKey) authorized(msg.sender) public returns(bool success) {
         require(!credentialVault.credentials[_txnKey].active);
-        _deleteCredential(_txnKey);
         credentialVault.numOfPendingCreds--;
         CredentialRejected(_txnKey);
+        return _deleteCredential(_txnKey);
     }
 
     event CredentialDeleted(bytes32 _txnKey, uint count);
     /// @notice delete a credential
     function deleteCredential(bytes32 _txnKey) authorized(msg.sender) public returns(bool success) {
-        success = _deleteCredential(_txnKey);
+        BadgeLibrary.Credential memory cred = credentialVault.credentials[_txnKey];
+        if(!cred.active) {
+          success = rejectCredential(_txnKey);
+        } else {
+          success = _deleteCredential(_txnKey);
+        }
         CredentialDeleted(_txnKey, credentialVault.keys.length);
         return success;
     }
