@@ -15,6 +15,9 @@ contract TransactionManager is BadgeManager, BFUtils {
     /// @notice mapping of a unique hash to a recipient address, used to verify issuer of a credential
     mapping (bytes32=>Transaction) public credentialTxnMap;
 
+    /// @notice list of transaction keys
+    bytes32[] public transactionKeys;
+
     uint public nonce;
 
     function TransactionManager(address _adminWalletAddr) public BadgeManager(_adminWalletAddr) {
@@ -43,6 +46,14 @@ contract TransactionManager is BadgeManager, BFUtils {
             _recipient
         );
         credentialTxnMap[_txnKey] = Transaction(_txnKey, integrityHash, _recipient, false);
+        transactionKeys.push(_txnKey);
+    }
+
+    /** @dev gets a transactionKeys list size, to be used in UI to fetch all transactions
+      * @return size transactionKeys size
+    */
+    function getTxnKeysSize() constant public returns(uint size) {
+        return transactionKeys.length;
     }
 
     /** @dev gets a transaction

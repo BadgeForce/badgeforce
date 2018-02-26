@@ -20,6 +20,8 @@ contract('TransactionManager', function (accounts) {
   it("should revoke and unrevoke a credential", async function() {
     const holder = await Holder.new(accounts[0]);
     await utils.issueCredential(issuer, holder);
+    const size = await issuer.getTxnKeysSize()
+    assert.equal(size, 1);
     const key = await holder.getTxnKey(0);
     const credential = utils.getCredentialObj((await holder.getCredential(key)));
     await issuer.revoke(credential._txKey);
