@@ -20,7 +20,7 @@ contract('Issuer', function (accounts) {
     assert.equal(await issuer.name(), utils.issuerInitialParams._name);
     assert.equal(await issuer.url(), utils.issuerInitialParams._url);
     await issuer.createBadge(...Object.values(utils.createBadgeParams));
-
+    console.log(await issuer.getNumberOfBadges())
   });
   it("should return issuer info", async function() {
     const info = await issuer.getInfo();

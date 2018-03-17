@@ -12,7 +12,8 @@
     "babel-register": "^6.26.0",
     "ganache-cli": "^6.0.3",
     "truffle": "^4.0.1",
-    "truffle-artifactor": "1.0.2"
+    "truffle-artifactor": "1.0.2",
+    "zeppelin-solidity": "^1.7.0"
   },
   "scripts": {
     "test": "rm -rf ./build && node_modules/truffle/build/cli.bundled.js compile && node_modules/truffle/build/cli.bundled.js test",

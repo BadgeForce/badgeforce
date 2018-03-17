@@ -1281,7 +1281,7 @@
                           "overloadedDeclarations": [
                             null
                           ],
-                          "referencedDeclaration": 2520,
+                          "referencedDeclaration": 2533,
                           "type": "msg",
                           "value": "msg"
                         },
@@ -2759,7 +2759,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 2514,
+                              "referencedDeclaration": 2527,
                               "type": "function () pure returns (bytes32)",
                               "value": "keccak256"
                             },
@@ -2965,7 +2965,7 @@
                           "overloadedDeclarations": [
                             null
                           ],
-                          "referencedDeclaration": 2520,
+                          "referencedDeclaration": 2533,
                           "type": "msg",
                           "value": "msg"
                         },
@@ -3291,7 +3291,7 @@
                           "overloadedDeclarations": [
                             null
                           ],
-                          "referencedDeclaration": 2520,
+                          "referencedDeclaration": 2533,
                           "type": "msg",
                           "value": "msg"
                         },
@@ -3661,5 +3661,5 @@
   },
   "networks": {},
   "schemaVersion": "1.0.1",
-  "updatedAt": "2018-02-26T04:27:13.678Z"
+  "updatedAt": "2018-03-17T11:33:07.391Z"
 }
